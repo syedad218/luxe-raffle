@@ -105,7 +105,7 @@
       "description": "Swedish hypercar pushing the boundaries of speed.",
       "image": "https://images.unsplash.com/photo-1724091663890-d84c2abfb28b",
       "longDescription": "The Koenigsegg Jesko is a showcase of Swedish engineering prowess, targeting record-breaking speeds with its twin-turbo V8 and advanced aerodynamics. Every panel and spoiler is carefully crafted to minimize drag and maximize downforce. Its interior is surprisingly refined, featuring modern design cues, premium materials, and the brand’s signature dihedral synchro-helix doors. The Jesko pushes the boundaries of what's achievable in a road car, transforming the drive into a physics-defying experience.",
-      "carPrice": "2.800.000",
+      "carPrice": 2800000,
       "ticketPrice": 70,
       "totalTickets": 40000,
       "availableTickets": 13994

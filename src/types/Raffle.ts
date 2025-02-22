@@ -1,11 +1,4 @@
-export type Raffle = {
-  id: number;
-  name: string;
-  description: string;
-  image: string;
-  longDescription: string;
-  carPrice: number;
-  ticketPrice: number;
-  totalTickets: number;
-  availableTickets: number;
-};
+import { z } from 'zod';
+import { raffleSchema } from '@/lib/schemas/raffle';
+
+export type Raffle = z.infer<typeof raffleSchema>;

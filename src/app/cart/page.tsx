@@ -1,39 +1,14 @@
-'use client';
-
 import { Button } from '@/components/ui/button';
-import { Minus, Plus, Trash2 } from 'lucide-react';
 import Image from 'next/image';
-import { useState } from 'react';
+import { getCart } from '@/server-functions/getCart';
+import { Cart } from '@/types/Cart';
+import EditQuantityButton from '@/components/cart/edit-quantity-button';
+import DeleteButton from '@/components/cart/delete-button';
 
-interface CartItem {
-  id: number;
-  quantity: number;
-}
-
-export default function CartPage() {
-  // TODO: This must come from the cart
-  const [items, setItems] = useState<CartItem[]>([
-    {
-      id: 1,
-      quantity: 1,
-    },
-    {
-      id: 6,
-      quantity: 1,
-    },
-  ]);
-
-  const handleQuantityUpdate = (id: number, newQuantity: number) => {
-    setItems((prevItems) =>
-      prevItems.map((item) =>
-        item.id === id ? { ...item, quantity: newQuantity } : item,
-      ),
-    );
-  };
-
-  const handleRemove = () => {
-    // TODO: Implement this
-  };
+export default async function CartPage() {
+  const cart: Cart | undefined = await getCart();
+  const items = cart?.items ?? [];
+  const isEmptyCart = items.length === 0;
 
   const handleCheckout = () => {
     // TODO: Implement this. Redirect to /account
@@ -44,17 +19,14 @@ export default function CartPage() {
       <h2 className="text-2xl font-bold mb-4">Your Cart</h2>
 
       <div className="mb-8">
-        {items.length === 0 ? (
+        {isEmptyCart ? (
           <p>Your cart is empty.</p>
         ) : (
           <ul className="space-y-4">
             {items.map((item) => {
-              // TODO: We need to load data from the server somehow
-              const name = '';
-              const imageSrc = '';
-
+              const { raffleId, name, imageSrc, quantity } = item;
               return (
-                <li key={item.id} className="flex items-center space-x-4">
+                <li key={raffleId} className="flex items-center space-x-4">
                   <Image
                     src={imageSrc}
                     alt={name}
@@ -65,37 +37,12 @@ export default function CartPage() {
                   <div className="flex-grow">
                     <h3 className="font-semibold">{name}</h3>
                     <div className="flex items-center space-x-2 mt-2">
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={() =>
-                          handleQuantityUpdate(
-                            item.id,
-                            Math.max(1, item.quantity - 1),
-                          )
-                        }
-                      >
-                        <Minus className="h-4 w-4" />
-                      </Button>
-                      <span className="font-medium">{item.quantity}</span>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={() =>
-                          handleQuantityUpdate(item.id, item.quantity + 1)
-                        }
-                      >
-                        <Plus className="h-4 w-4" />
-                      </Button>
+                      <EditQuantityButton type="minus" productId={raffleId} />
+                      <span className="font-medium">{quantity}</span>
+                      <EditQuantityButton type="plus" productId={raffleId} />
                     </div>
                   </div>
-                  <Button
-                    variant="destructive"
-                    size="icon"
-                    onClick={() => handleRemove()}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
+                  <DeleteButton productId={raffleId} />
                 </li>
               );
             })}
@@ -103,11 +50,12 @@ export default function CartPage() {
         )}
       </div>
 
-      <div className="flex justify-end">
-        <Button variant="default" onClick={handleCheckout}>
-          Checkout
-        </Button>
-      </div>
+      {!isEmptyCart && (
+        <div className="flex justify-end">
+          {/* <Button variant="default" onClick={handleCheckout}> */}
+          <Button variant="default">Checkout</Button>
+        </div>
+      )}
     </div>
   );
 }

@@ -198,5 +198,7 @@
       "d57feba4-317b-4119-b7c7-a7d8f8c96621"
     ],
     "undefined": ["bba8bd10-ce5f-4f2a-82fe-a92e1cf1ea5b"]
-  }
+  },
+  "carts": {},
+  "userCarts": {}
 }

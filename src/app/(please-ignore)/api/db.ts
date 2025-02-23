@@ -1,6 +1,7 @@
 import { Raffle } from '@/types/Raffle';
 import { Order } from '@/types/Order';
 import { User } from '@/types/User';
+import { Cart } from '@/types/Cart';
 import fs from 'fs/promises';
 import path from 'path';
 
@@ -10,6 +11,8 @@ type Database = {
   raffles: Raffle[];
   orders: Record<string, Order>;
   userOrders: Record<string, string[]>;
+  carts: Record<string, Cart>;
+  userCart: Record<string, string>;
   users: Array<User & { password: string }>;
 };
 

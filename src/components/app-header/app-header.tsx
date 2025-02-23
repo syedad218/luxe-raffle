@@ -1,16 +1,12 @@
-import { ShoppingCart, User } from 'lucide-react';
+import { User } from 'lucide-react';
 import Link from 'next/link';
 import { UserIcon } from '../user-icon/user-icon';
-
-const CartCounter = ({ items }: { items: number }) => (
-  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-    {items}
-  </span>
-);
+import { CartButton } from '../cart/cartButton';
+import { Suspense } from 'react';
+import { ShoppingCart } from 'lucide-react';
 
 export const AppHeader = async () => {
   const firstName = ''; // TODO: Somehow get this from the token
-  const amountOfCartItems = 0; // TODO: Somehow get this from the cart
 
   return (
     <header className="bg-white shadow-md">
@@ -56,8 +52,9 @@ export const AppHeader = async () => {
             href="/cart"
             className="text-gray-600 hover:text-gray-800 relative"
           >
-            <ShoppingCart size={24} />
-            {!!amountOfCartItems && <CartCounter items={amountOfCartItems} />}
+            <Suspense fallback={<ShoppingCart size={24} />}>
+              <CartButton />
+            </Suspense>
           </Link>
         </div>
       </div>

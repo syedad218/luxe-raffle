@@ -2,6 +2,7 @@ import { Raffle } from '@/types/Raffle';
 import Image from 'next/image';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
+import AddToCart from '@/components/cart/add-to-cart';
 
 export default function RaffleTile({ raffle }: { raffle: Raffle }) {
   return (
@@ -27,9 +28,9 @@ export default function RaffleTile({ raffle }: { raffle: Raffle }) {
 
         <p className="text-gray-600 mb-4">{raffle.description}</p>
 
-        <div className="flex justify-between mt-auto">
-          <Button variant="outline">Add to Cart</Button>
-          <Button>View Details</Button>
+        <div className="flex justify-between gap-4 w-full mt-auto">
+          <AddToCart product={raffle} />
+          <Button className="w-1/3">View Details</Button>
         </div>
       </div>
     </div>

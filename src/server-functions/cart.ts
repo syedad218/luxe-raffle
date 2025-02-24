@@ -52,6 +52,7 @@ export const addToCart = async ({
       cost: product.ticketPrice * quantity,
       imageSrc: product.image,
       name: product.name,
+      description: product.description,
     });
   }
   cart.totalQuantity += quantity;

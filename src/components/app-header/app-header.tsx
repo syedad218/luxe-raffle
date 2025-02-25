@@ -4,9 +4,13 @@ import { UserIcon } from '../user-icon/user-icon';
 import { CartButton } from '../cart/cartButton';
 import { Suspense } from 'react';
 import { ShoppingCart } from 'lucide-react';
+import { cookies } from 'next/headers';
+import { decryptToken } from '@/lib/token';
 
 export const AppHeader = async () => {
-  const firstName = ''; // TODO: Somehow get this from the token
+  const token = (await cookies()).get('sid')?.value;
+  const user = decryptToken(token || '');
+  const firstName = user?.firstName; // TODO: Somehow get this from the token
 
   return (
     <header className="bg-white shadow-md">

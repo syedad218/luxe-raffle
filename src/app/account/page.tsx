@@ -1,5 +1,3 @@
-'use client';
-
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -9,14 +7,21 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { decryptToken } from '@/lib/token';
 import { LogOut } from 'lucide-react';
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 
-export default function AccountPage() {
-  const handleLogout = () => {
-    // TODO: Implement logout
+export default async function AccountPage() {
+  const handleLogout = async () => {
+    'use server';
+    (await cookies()).delete('sid');
+    redirect('/login');
   };
 
-  const firstName = ''; // TODO: This should be the user's first name
+  const token = (await cookies()).get('sid')?.value;
+  const user = decryptToken(token || '');
+  const firstName = user?.firstName; // TODO: Somehow get this from the token
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -40,13 +45,11 @@ export default function AccountPage() {
           )} */}
         </CardContent>
         <CardFooter>
-          <Button
-            variant="destructive"
-            className="w-full"
-            onClick={handleLogout}
-          >
-            <LogOut className="mr-2 h-4 w-4" /> Logout
-          </Button>
+          <form action={handleLogout}>
+            <Button variant="destructive" className="w-full">
+              <LogOut className="mr-2 h-4 w-4" /> Logout
+            </Button>
+          </form>
         </CardFooter>
       </Card>
     </div>

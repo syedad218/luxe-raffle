@@ -3,15 +3,16 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
 import { decryptToken } from '@/lib/token';
-import { LogOut } from 'lucide-react';
+import { LogOut, ShoppingBag, Calendar, Ticket } from 'lucide-react';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { getOrders } from '@/server-functions/getOrders';
+import Link from 'next/link';
+import { Order } from '@/types/Order';
 
 export default async function AccountPage() {
   const handleLogout = async () => {
@@ -22,7 +23,7 @@ export default async function AccountPage() {
 
   const token = (await cookies()).get('sid')?.value;
   const user = decryptToken(token || '');
-  const firstName = user?.firstName; // TODO: Somehow get this from the token
+  const firstName = user?.firstName;
 
   if (!token) {
     redirect('/login');
@@ -30,34 +31,142 @@ export default async function AccountPage() {
 
   const orders = await getOrders(token);
 
+  // Function to format currency
+  const formatCurrency = (amount: number) => {
+    return `${amount.toFixed(2)} €`;
+  };
+
+  // Function to format date
+  const formatDate = (date: string) => {
+    return new Date(date).toLocaleDateString(undefined, {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
-      <Card className="w-full max-w-2xl mx-auto">
-        <CardHeader>
-          <CardTitle className="text-2xl">Account Information</CardTitle>
-          <CardDescription>Welcome, {firstName}!</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <h3 className="text-xl font-semibold mb-4">Your Raffle Tickets</h3>
-          {orders?.length === 0 ? (
-            <p>You haven't purchased any tickets yet.</p>
-          ) : (
-            <ul className="space-y-4">
-              {orders?.map(({ id, items }) => (
-                <li key={id} className="border-b pb-4 last:border-b-0">
-                  <p>{items.length}</p>
-                </li>
-              ))}
-            </ul>
-          )}
-        </CardContent>
-        <CardFooter>
+      <Card className="w-full max-w-4xl mx-auto">
+        <CardHeader className="flex flex-row items-center justify-between">
+          <div>
+            <CardTitle className="text-2xl">Your Account</CardTitle>
+            <CardDescription>Welcome back, {firstName}!</CardDescription>
+          </div>
           <form action={handleLogout}>
-            <Button variant="destructive" className="w-full">
+            <Button variant="outline" size="sm">
               <LogOut className="mr-2 h-4 w-4" /> Logout
             </Button>
           </form>
-        </CardFooter>
+        </CardHeader>
+
+        <CardContent>
+          <h3 className="text-xl font-semibold mb-6 flex items-center">
+            <ShoppingBag className="mr-2 h-5 w-5" />
+            Your Order History
+          </h3>
+
+          {orders?.length === 0 ? (
+            <div className="text-center py-8 text-gray-500">
+              <ShoppingBag className="h-12 w-12 mx-auto mb-4 opacity-50" />
+              <p>You haven't purchased any tickets yet.</p>
+              <Link href="/">
+                <Button className="mt-4">Browse Products</Button>
+              </Link>
+            </div>
+          ) : (
+            <div className="space-y-8">
+              {orders?.map((order: Order) => (
+                <div
+                  key={order.id}
+                  className="border rounded-lg overflow-hidden"
+                >
+                  <div className="bg-gray-50 p-4 flex justify-between items-center border-b">
+                    <div>
+                      <div className="flex items-center text-sm text-gray-500 mb-1">
+                        <Calendar className="h-4 w-4 mr-1" />
+                        Order Date: {formatDate(order.createdAt)}
+                      </div>
+                      <div className="font-medium">
+                        Order #{order.id.slice(0, 8)}
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-sm text-gray-500 mb-1">Total</div>
+                      <div className="font-bold">
+                        {formatCurrency(order.total)}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="divide-y">
+                    {order.items.map((item, index) => (
+                      <div
+                        key={index}
+                        className="p-4 flex justify-between items-center"
+                      >
+                        <div className="flex items-start gap-4">
+                          {item.imageSrc && (
+                            <div className="rounded w-16 h-16 overflow-hidden bg-gray-100 flex-shrink-0">
+                              <img
+                                src={item.imageSrc}
+                                alt={item.name}
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                          )}
+                          <div>
+                            <h4 className="font-medium">{item.name}</h4>
+                            <div className="text-sm text-gray-500 mt-1">
+                              {item.description && <p>{item.description}</p>}
+                              <div className="flex items-center mt-1">
+                                <Ticket className="h-3 w-3 mr-1" />
+                                Quantity: {item.quantity}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="font-medium">
+                            {formatCurrency(item.price)}
+                          </div>
+                          {item.quantity > 1 && (
+                            <div className="text-sm text-gray-500">
+                              {formatCurrency(
+                                Number(item.price / item.quantity),
+                              )}{' '}
+                              each
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="bg-gray-50 p-4 border-t">
+                    <div className="flex justify-between text-sm mb-2">
+                      <span>Subtotal</span>
+                      <span>{formatCurrency(order.subtotal)}</span>
+                    </div>
+                    {order.shipping !== undefined && (
+                      <div className="flex justify-between text-sm mb-2">
+                        <span>Shipping</span>
+                        <span>{formatCurrency(order.shipping)}</span>
+                      </div>
+                    )}
+                    <div className="flex justify-between font-bold mt-3 pt-3 border-t">
+                      <span>Total</span>
+                      <span>{formatCurrency(order.total)}</span>
+                    </div>
+                    <div className="text-xs text-gray-500 text-right mt-1">
+                      VAT included
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
       </Card>
     </div>
   );

@@ -7,12 +7,20 @@ import { Spinner } from '../ui/spinner';
 export default function CheckoutButton({
   checkoutAction,
   orderItems,
+  cartId,
+  userId,
 }: {
   checkoutAction: any;
   orderItems: any;
+  cartId: any;
+  userId: any;
 }) {
   const [message, formAction, isPending] = useActionState(checkoutAction, null);
-  const orderAction = formAction.bind(null, orderItems);
+  const orderAction = formAction.bind(null, {
+    cartId,
+    userId,
+    items: orderItems,
+  });
 
   return (
     <form action={orderAction}>

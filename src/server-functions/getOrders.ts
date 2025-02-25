@@ -21,6 +21,6 @@ export const getOrders = async (token: string) => {
     return data;
   } catch (e) {
     console.error(e);
-    return { items: [] };
+    return [];
   }
 };

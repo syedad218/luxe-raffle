@@ -10,9 +10,9 @@ const dbFilePath = path.join(process.cwd(), 'data', 'db.json');
 type Database = {
   raffles: Raffle[];
   orders: Record<string, Order>;
-  userOrders: Record<string, string[]>;
+  userOrders: Record<string, Order['id'][]>;
   carts: Record<string, Cart>;
-  userCart: Record<string, string>;
+  userCart: Record<string, Cart['id']>;
   users: Array<User & { password: string }>;
 };
 

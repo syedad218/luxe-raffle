@@ -1,4 +1,3 @@
-import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import { getCart } from '@/server-functions/getCart';
 import { Cart } from '@/types/Cart';
@@ -6,8 +5,10 @@ import EditQuantityButton from '@/components/cart/edit-quantity-button';
 import DeleteButton from '@/components/cart/delete-button';
 import CheckoutButton from '@/components/cart/checkout-button';
 import { order } from '@/server-functions/order';
+import { deleteCart } from '@/server-functions/cart';
 import { OrderItem } from '@/types/OrderItem';
 import { redirect } from 'next/navigation';
+import { cookies } from 'next/headers';
 
 export default async function CartPage() {
   const cart: Cart | undefined = await getCart();
@@ -17,13 +18,24 @@ export default async function CartPage() {
   const orderItems = items.map((item) => ({
     id: item.raffleId,
     quantity: item.quantity,
+    imageSrc: item.imageSrc,
+    name: item.name,
+    description: item.description,
+    price: item.cost,
   }));
 
-  const checkoutAction = async (prevState: any, orderItems: OrderItem[]) => {
+  const checkoutAction = async (
+    prevState: any,
+    payload: { cartId: string; userId: string; items: OrderItem[] },
+  ) => {
     'use server';
     // TODO: Implement this. Redirect to /account
+    const { cartId, userId, items } = payload;
     try {
-      await order({ items: orderItems });
+      await order({ items });
+      // delete cart for the user on successful order
+      await deleteCart(cartId, userId);
+      (await cookies()).delete('cartCount');
     } catch (e) {
       console.error(e);
       return 'Failed to place order!';
@@ -121,6 +133,8 @@ export default async function CartPage() {
                 <CheckoutButton
                   checkoutAction={checkoutAction}
                   orderItems={orderItems}
+                  cartId={cart?.id}
+                  userId={cart?.userId}
                 />
                 <div className="mt-6">
                   <p className="text-sm text-gray-600 mb-3">We accept</p>

@@ -11,6 +11,7 @@ import { decryptToken } from '@/lib/token';
 import { LogOut } from 'lucide-react';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
+import { getOrders } from '@/server-functions/getOrders';
 
 export default async function AccountPage() {
   const handleLogout = async () => {
@@ -23,6 +24,12 @@ export default async function AccountPage() {
   const user = decryptToken(token || '');
   const firstName = user?.firstName; // TODO: Somehow get this from the token
 
+  if (!token) {
+    redirect('/login');
+  }
+
+  const orders = await getOrders(token);
+
   return (
     <div className="container mx-auto px-4 py-8">
       <Card className="w-full max-w-2xl mx-auto">
@@ -32,17 +39,17 @@ export default async function AccountPage() {
         </CardHeader>
         <CardContent>
           <h3 className="text-xl font-semibold mb-4">Your Raffle Tickets</h3>
-          {/* {tickets.length === 0 ? (
+          {orders?.length === 0 ? (
             <p>You haven't purchased any tickets yet.</p>
           ) : (
             <ul className="space-y-4">
-              {tickets.map((ticket) => (
-                <li key={ticket.id} className="border-b pb-4 last:border-b-0">
-                  <p>...</p>
+              {orders?.map(({ id, items }) => (
+                <li key={id} className="border-b pb-4 last:border-b-0">
+                  <p>{items.length}</p>
                 </li>
               ))}
             </ul>
-          )} */}
+          )}
         </CardContent>
         <CardFooter>
           <form action={handleLogout}>

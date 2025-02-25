@@ -4,6 +4,7 @@ import { login } from '@/server-functions/login';
 import { cookies } from 'next/headers';
 import { z } from 'zod';
 import { FormState } from '@/types/Login';
+import { redirect } from 'next/navigation';
 
 export const userLogin = async (
   prevState: any,
@@ -15,10 +16,6 @@ export const userLogin = async (
 
     const { token: userId } = await login(email, password);
     (await cookies()).set('sid', userId.toString());
-    return {
-      success: true,
-      errors: {},
-    };
   } catch (error: any) {
     const rawInputs = {
       email: formData.get('email') as string,
@@ -44,4 +41,6 @@ export const userLogin = async (
       },
     };
   }
+
+  redirect('/account');
 };

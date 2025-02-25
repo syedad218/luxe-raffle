@@ -4,14 +4,32 @@ import { getCart } from '@/server-functions/getCart';
 import { Cart } from '@/types/Cart';
 import EditQuantityButton from '@/components/cart/edit-quantity-button';
 import DeleteButton from '@/components/cart/delete-button';
+import CheckoutButton from '@/components/cart/checkout-button';
+import { order } from '@/server-functions/order';
+import { OrderItem } from '@/types/OrderItem';
+import { redirect } from 'next/navigation';
 
 export default async function CartPage() {
   const cart: Cart | undefined = await getCart();
   const items = cart?.items ?? [];
   const isEmptyCart = items.length === 0;
 
-  const handleCheckout = () => {
+  const orderItems = items.map((item) => ({
+    id: item.raffleId,
+    quantity: item.quantity,
+  }));
+
+  const checkoutAction = async (prevState: any, orderItems: OrderItem[]) => {
+    'use server';
     // TODO: Implement this. Redirect to /account
+    try {
+      await order({ items: orderItems });
+    } catch (e) {
+      console.error(e);
+      return 'Failed to place order!';
+    }
+
+    redirect('/account');
   };
 
   return (
@@ -100,13 +118,10 @@ export default async function CartPage() {
                   <div className="text-xs text-gray-500 mt-1">VAT included</div>
                 </div>
 
-                <Button
-                  variant="default"
-                  className="w-full bg-black hover:bg-gray-800 text-white py-3"
-                >
-                  Go to checkout
-                </Button>
-
+                <CheckoutButton
+                  checkoutAction={checkoutAction}
+                  orderItems={orderItems}
+                />
                 <div className="mt-6">
                   <p className="text-sm text-gray-600 mb-3">We accept</p>
                   <div className="flex flex-wrap justify-between">

@@ -5,6 +5,7 @@ import { ErrorPage } from '@/components/error';
 
 export default function Error({
   error,
+  reset,
 }: {
   error: Error & { digest?: string };
   reset: () => void;
@@ -13,5 +14,5 @@ export default function Error({
     console.error(error);
   }, [error]);
 
-  return <ErrorPage error={error} reset={() => location.reload()} />;
+  return <ErrorPage error={error} reset={reset} />;
 }

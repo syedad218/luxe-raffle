@@ -7,7 +7,7 @@ import { startTransition } from 'react';
 
 interface ErrorPageProps {
   error: Error & { digest?: string };
-  reset?: () => void;
+  reset: () => void;
 }
 
 export const ErrorPage: React.FC<ErrorPageProps> = ({ error, reset }) => {
@@ -16,7 +16,7 @@ export const ErrorPage: React.FC<ErrorPageProps> = ({ error, reset }) => {
   const refreshAndReset = () => {
     startTransition(() => {
       router.refresh();
-      if (reset) reset();
+      reset();
     });
   };
 

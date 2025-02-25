@@ -34,6 +34,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
         // clone the component and pass the error as a prop
         return React.cloneElement(this.props.fallback, {
           error: this.state.error,
+          reset: () => this.setState({ hasError: false, error: undefined }),
         });
       }
     }

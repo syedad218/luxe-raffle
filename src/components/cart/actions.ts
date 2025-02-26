@@ -24,6 +24,7 @@ export async function addItem(prevState: any, product: Raffle) {
     const cartCount = await addToCart({ product, quantity: 1, cartId });
     (await cookies()).set('cartCount', cartCount.toString());
   } catch (error: Error | any) {
+    console.error('Error adding item to cart:', error);
     return `Error adding item to cart: ${error.message}`;
   }
 }
@@ -72,7 +73,8 @@ export async function removeItem(prevState: any, productId: Raffle['id']) {
 }
 
 export async function createCartAndSetCookie() {
-  const cartId = await createCart();
+  const cartId = crypto.randomUUID();
+  await createCart(cartId);
   (await cookies()).set('cartId', cartId!, {
     expires: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
   });

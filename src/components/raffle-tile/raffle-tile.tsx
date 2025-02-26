@@ -30,7 +30,7 @@ export default function RaffleTile({ raffle }: { raffle: Raffle }) {
 
         <div className="flex justify-between gap-4 w-full mt-auto">
           <AddToCart product={raffle} />
-          <Button className="min-w-1/3">View Details</Button>
+          <Button className="w-1/3">View Details</Button>
         </div>
       </div>
     </div>

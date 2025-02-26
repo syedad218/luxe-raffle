@@ -9,7 +9,12 @@ const RafflesResponseSchema = z.array(raffleSchema);
 
 export const getRaffles = async (): Promise<Raffle[]> => {
   // TODO: Make this somehow type-safe, possibly with zod
-  const response = await fetch(API_BASE_URL + '/api/raffles');
+  const response = await fetch(API_BASE_URL + '/api/raffles', {
+    next: {
+      revalidate: false,
+      tags: ['raffles'],
+    },
+  });
   if (!response.ok) {
     throw new Error('Failed to fetch raffles! ' + response.statusText);
   }

@@ -11,6 +11,10 @@ export const getOrders = async (token: string) => {
     headers: {
       Authorization: `Bearer ${token}`,
     },
+    next: {
+      revalidate: false,
+      tags: ['orders'],
+    },
   });
 
   if (!response.ok) {

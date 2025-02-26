@@ -11,7 +11,7 @@ const AddToCart = ({ product }: { product: Raffle }) => {
   const addToCartAction = formAction.bind(null, product);
 
   return (
-    <form action={addToCartAction} className="min-w-1/3">
+    <form action={addToCartAction} className="w-1/3">
       <>
         <Button variant="outline" disabled={isPending} className="w-full">
           {isPending ? <Spinner size="sm" variant="default" /> : 'Add to Cart'}

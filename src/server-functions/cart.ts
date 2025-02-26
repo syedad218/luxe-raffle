@@ -3,9 +3,8 @@
 import { readDatabase, writeDatabase } from '@/app/(please-ignore)/api/db';
 import type { Raffle } from '@/types/Raffle';
 
-export const createCart = async () => {
+export const createCart = async (cartId: string) => {
   const db = await readDatabase();
-  const cartId = crypto.randomUUID();
   db.carts[cartId] = {
     id: cartId,
     userId: '',
@@ -19,7 +18,7 @@ export const createCart = async () => {
 
   await writeDatabase(db);
 
-  return cartId;
+  return db.carts[cartId];
 };
 
 export const addToCart = async ({
@@ -32,9 +31,9 @@ export const addToCart = async ({
   cartId: string;
 }) => {
   const db = await readDatabase();
-  const cart = db.carts[cartId];
+  let cart = db.carts[cartId];
   if (!cart) {
-    throw new Error('Cart not found');
+    cart = await createCart(cartId);
   }
   // check if item exists in cart else add it
   const existingItem = cart.items.find((item) => item.raffleId === product.id);

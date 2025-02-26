@@ -9,6 +9,7 @@ import { deleteCart } from '@/server-functions/cart';
 import { OrderItem } from '@/types/OrderItem';
 import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
+import { revalidateTag } from 'next/cache';
 
 export default async function CartPage() {
   const cart: Cart | undefined = await getCart();
@@ -41,6 +42,7 @@ export default async function CartPage() {
       return 'Failed to place order!';
     }
 
+    revalidateTag('orders');
     redirect('/account');
   };
 

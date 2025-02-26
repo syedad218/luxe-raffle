@@ -1,9 +1,4 @@
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { ShoppingBag } from 'lucide-react';
 import OrderHistoryLoadingSkeleton from '@/components/loading-skeleton/order-history';
 

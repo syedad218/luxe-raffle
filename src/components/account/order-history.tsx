@@ -4,13 +4,11 @@ import { Order } from '@/types/Order';
 import { ShoppingBag, Calendar, Ticket } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { formatCurrency, formatDate } from '@/lib/utils/formatting';
+import { cookies } from 'next/headers';
 
-export default async function OrderHistory({
-  userToken,
-}: {
-  userToken: string;
-}) {
-  const orders = await getOrders(userToken);
+export default async function OrderHistory() {
+  const userToken = (await cookies()).get('sid')?.value;
+  const orders = userToken ? await getOrders(userToken) : [];
 
   return (
     <>

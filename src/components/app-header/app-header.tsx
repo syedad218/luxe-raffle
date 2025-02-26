@@ -7,7 +7,7 @@ import { User } from 'lucide-react';
 
 export const AppHeader = async () => {
   return (
-    <header className="bg-white shadow-md">
+    <header className="bg-white shadow-md h-15">
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
         <div className="flex items-center space-x-8">
           <Link href="/" className="text-2xl font-bold text-gray-800">

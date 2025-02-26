@@ -1,17 +1,11 @@
-import { User } from 'lucide-react';
 import Link from 'next/link';
-import { UserIcon } from '../user-icon/user-icon';
-import { CartButton } from '../cart/cartButton';
 import { Suspense } from 'react';
 import { ShoppingCart } from 'lucide-react';
-import { cookies } from 'next/headers';
-import { decryptToken } from '@/lib/token';
+import { CartButton } from './cart-nav';
+import { UserButton } from './user-nav';
+import { User } from 'lucide-react';
 
 export const AppHeader = async () => {
-  const token = (await cookies()).get('sid')?.value;
-  const user = decryptToken(token || '');
-  const firstName = user?.firstName; // TODO: Somehow get this from the token
-
   return (
     <header className="bg-white shadow-md">
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
@@ -43,15 +37,9 @@ export const AppHeader = async () => {
         </div>
 
         <div className="flex items-center space-x-4">
-          {firstName ? (
-            <Link href="/account">
-              <UserIcon firstName={firstName} />
-            </Link>
-          ) : (
-            <Link href="/login" className="text-gray-600 hover:text-gray-800">
-              <User size={24} />
-            </Link>
-          )}
+          <Suspense fallback={<User size={24} />}>
+            <UserButton />
+          </Suspense>
           <Link
             href="/cart"
             className="text-gray-600 hover:text-gray-800 relative"

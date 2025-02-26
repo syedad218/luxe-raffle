@@ -5,10 +5,10 @@ import { AlertTriangle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { startTransition } from 'react';
 
-interface ErrorPageProps {
+export type ErrorPageProps = {
   error: Error & { digest?: string };
   reset: () => void;
-}
+};
 
 export const ErrorPage: React.FC<ErrorPageProps> = ({ error, reset }) => {
   const router = useRouter();

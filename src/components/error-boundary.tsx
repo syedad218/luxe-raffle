@@ -1,15 +1,11 @@
 'use client';
 
 import React, { Component, ReactNode } from 'react';
-
-type FallbackRenderFunction = (props: {
-  error: Error | undefined;
-}) => React.ReactNode;
+import type { ErrorPageProps } from '@/components/error';
 
 interface ErrorBoundaryProps {
   children: ReactNode;
-  fallback?: ReactNode;
-  fallbackRender?: FallbackRenderFunction;
+  fallback?: React.FC<ErrorPageProps>;
 }
 
 interface ErrorBoundaryState {
@@ -28,15 +24,22 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
     console.error(error, errorInfo);
   }
 
+  resetErrorBoundary = () => {
+    this.setState({ hasError: false, error: undefined });
+  };
+
   render() {
     if (this.state.hasError) {
-      if (this.props.fallback) {
-        // clone the component and pass the error as a prop
-        return React.cloneElement(this.props.fallback, {
-          error: this.state.error,
-          reset: () => this.setState({ hasError: false, error: undefined }),
-        });
+      const { fallback: FallbackComponent } = this.props;
+      if (FallbackComponent) {
+        return (
+          <FallbackComponent
+            error={this.state.error || new Error('Unknown error')}
+            reset={this.resetErrorBoundary}
+          />
+        );
       }
+      return null;
     }
 
     return this.props.children;

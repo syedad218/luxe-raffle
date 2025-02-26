@@ -52,7 +52,7 @@ export default async function AccountPage() {
             Your Order History
           </h3>
 
-          <ErrorBoundary fallback={<ErrorPage />}>
+          <ErrorBoundary fallback={ErrorPage}>
             <Suspense fallback={<OrderHistoryLoadingSkeleton />}>
               <OrderHistory userToken={token} />
             </Suspense>

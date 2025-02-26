@@ -8,6 +8,7 @@ import {
   createCart,
 } from '@/server-functions/cart';
 import { cookies } from 'next/headers';
+import { revalidateTag } from 'next/cache';
 
 export async function addItem(prevState: any, product: Raffle) {
   if (!product) {
@@ -27,6 +28,8 @@ export async function addItem(prevState: any, product: Raffle) {
     console.error('Error adding item to cart:', error);
     return `Error adding item to cart: ${error.message}`;
   }
+
+  revalidateTag('cart');
 }
 
 export async function updateItem(
@@ -51,6 +54,8 @@ export async function updateItem(
   } catch (error: Error | any) {
     return `Error updating item in cart: ${error.message}`;
   }
+
+  revalidateTag('cart');
 }
 
 export async function removeItem(prevState: any, productId: Raffle['id']) {
@@ -70,6 +75,8 @@ export async function removeItem(prevState: any, productId: Raffle['id']) {
   } catch (error: Error | any) {
     return `Error removing item from cart: ${error.message}`;
   }
+
+  revalidateTag('cart');
 }
 
 export async function createCartAndSetCookie() {

@@ -45,7 +45,7 @@ export default async function OrderHistory() {
 
           <div className="divide-y">
             {order.items.map((item) => (
-              <OrderItem item={item} />
+              <OrderItem key={item.id} item={item} />
             ))}
           </div>
 

@@ -6,6 +6,7 @@ import type { Raffle } from '@/types/Raffle';
 import {
   createCartItem,
   getCartExpiration,
+  mergeUserAndGuestCart,
   updateCartDetails,
 } from '@/lib/utils/cart';
 import { errorMessages } from '@/lib/constants';
@@ -29,18 +30,57 @@ export const createEmptyCart = async (userId: number | undefined) => {
   return cart;
 };
 
-export const updateUserCart = async (cartId: string, userId: number) => {
+export const updateUserCart = async (
+  guestCartId: string | undefined,
+  userId: number,
+): Promise<{
+  cartCount: number;
+  cartId: string;
+  expiration: string;
+}> => {
   const db = await readDatabase();
-  const cart = db.carts[cartId];
+  const guestCart = db.carts[guestCartId ?? ''];
 
-  if (!cart || cart.userId === userId) {
-    return;
+  const existingCartId = db.userCart[userId];
+  const existingCart = db.carts[existingCartId ?? ''];
+
+  // when guest cart doesn't exist, return the existing cart
+  if (existingCart && !guestCart) {
+    return {
+      cartCount: existingCart.totalQuantity,
+      cartId: existingCartId,
+      expiration: existingCart.expiresAt,
+    };
   }
 
-  cart.userId = userId;
-  db.carts[cartId] = cart;
-  db.userCart[String(userId)] = cartId;
+  // when user doesn't have an existing cart in the database, update the guest cart with the userId
+  else if (!existingCartId && guestCartId) {
+    guestCart.userId = userId;
+    db.carts[guestCartId] = guestCart;
+    db.userCart[String(userId)] = guestCartId;
+    await writeDatabase(db);
+
+    return {
+      cartCount: guestCart.totalQuantity,
+      cartId: guestCartId,
+      expiration: guestCart.expiresAt,
+    };
+  }
+
+  // when user already has a cart in the database, merge the guest cart with the existing cart
+  const { mergedCart, cartTotalQuantity } = mergeUserAndGuestCart(
+    existingCart,
+    guestCart,
+  );
+  delete db.carts[guestCartId as string];
+  db.carts[existingCartId] = mergedCart;
   await writeDatabase(db);
+
+  return {
+    cartCount: cartTotalQuantity,
+    cartId: existingCartId,
+    expiration: mergedCart.expiresAt,
+  };
 };
 
 export const addToCart = async ({

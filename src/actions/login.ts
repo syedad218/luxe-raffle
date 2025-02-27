@@ -23,8 +23,20 @@ export const userLogin = async (
 
     // get userId and update cart in the database with userId
     const userId = decryptToken(token || '')?.id;
-    const cartId = cookieStore.get('cartId')?.value;
-    if (cartId && userId) updateUserCart(cartId, userId);
+    const guestCartId = cookieStore.get('cartId')?.value;
+    if (userId) {
+      const {
+        cartCount,
+        cartId: newCartId,
+        expiration,
+      } = await updateUserCart(guestCartId, userId);
+      if (guestCartId !== newCartId) {
+        cookieStore.set('cartId', newCartId, {
+          expires: new Date(expiration),
+        });
+      }
+      cookieStore.set('cartCount', cartCount.toString());
+    }
 
     return { success: true, errors: {} };
   } catch (error) {

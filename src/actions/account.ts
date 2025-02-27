@@ -5,7 +5,8 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
 export const handleLogout = async () => {
-  (await cookies()).delete('sid');
+  const cookieStore = await cookies();
+  cookieStore.delete('sid').delete('cartId').delete('cartCount');
 
   await wait(500); // simulate API slowness
 

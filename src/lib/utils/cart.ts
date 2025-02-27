@@ -100,3 +100,37 @@ export const updateExistingCartItem = (
 
   return { updatedItem, newQuantity, singleItemCost };
 };
+
+export const mergeUserAndGuestCart = (userCart: Cart, guestCart: Cart) => {
+  const existingItemMap = new Map(
+    userCart.items.map((item) => [item.raffleId, item]),
+  );
+
+  guestCart.items.forEach((guestItem) => {
+    const existingItem = existingItemMap.get(guestItem.raffleId);
+    if (existingItem) {
+      // instead of adding the quantity, pick the max quantity
+      const newQuantity = Math.max(existingItem.quantity, guestItem.quantity);
+      const singleItemCost = Number(guestItem.cost) / guestItem.quantity;
+      existingItem.quantity = newQuantity;
+      existingItem.cost = singleItemCost * newQuantity;
+    } else {
+      userCart.items.push(guestItem);
+    }
+  });
+
+  const cartTotalCost = userCart.items.reduce(
+    (total, item) => total + item.cost,
+    0,
+  );
+  const cartTotalQuantity = userCart.items.reduce(
+    (total, item) => total + item.quantity,
+    0,
+  );
+  userCart.totalCost = cartTotalCost;
+  userCart.totalQuantity = cartTotalQuantity;
+  userCart.updatedAt = new Date().toISOString();
+  userCart.expiresAt = getCartExpiration().toISOString();
+
+  return { cartTotalQuantity, mergedCart: userCart };
+};

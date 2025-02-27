@@ -6,7 +6,7 @@ import { Suspense } from 'react';
 import ErrorBoundary from '@/components/error-boundary';
 import { ErrorPage } from '@/components/error';
 import UserName from '@/components/account/user-name';
-import Logout from '@/components/account/logout';
+import Logout from '@/components/account/logout-button';
 
 export default async function AccountPage() {
   return (

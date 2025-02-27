@@ -38,7 +38,7 @@ export default function CartItemsList({ items }: { items: OptimisticCart[] }) {
                   alt={name}
                   width={100}
                   height={80}
-                  className="rounded-md object-cover"
+                  className="rounded-md object-cover h-24"
                 />
                 <div className="flex-grow">
                   <h3 className="font-semibold text-md">{name}</h3>

@@ -1,6 +1,6 @@
 const CartLoadingSkeleton = () => {
   return (
-    <div className="container mx-auto px-8 py-8 max-w-6xl mt-2">
+    <div className="container mx-auto px-8 py-8 max-w-6xl mt-1">
       {/* Header skeleton */}
       <div className="h-8 w-64 bg-gray-200 rounded-md mb-6 animate-pulse" />
 

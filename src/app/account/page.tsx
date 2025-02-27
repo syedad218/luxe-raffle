@@ -25,7 +25,7 @@ export default async function AccountPage() {
           </div>
           <Logout />
         </CardHeader>
-
+        {/* Order History Listing */}
         <CardContent>
           <h3 className="text-xl font-semibold mb-6 flex items-center">
             <ShoppingBag className="mr-2 h-5 w-5" />

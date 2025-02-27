@@ -7,6 +7,16 @@ import { updateItem } from '@/actions/cart';
 import type { Raffle } from '@/types/Raffle';
 import { CartAction } from '@/types/Cart';
 
+type State = {
+  success: boolean;
+  error: string;
+};
+
+const initialState: State = {
+  success: false,
+  error: '',
+};
+
 export default function EditQuantityButton({
   type,
   productId,
@@ -16,13 +26,14 @@ export default function EditQuantityButton({
   productId: Raffle['id'];
   setOptimisticCartItems: (action: CartAction) => void;
 }) {
-  const [message, formAction] = useActionState(updateItem, null);
+  const [state, formAction] = useActionState(updateItem, initialState);
   const payload = { productId, updateType: type };
   const updateItemAction = formAction.bind(null, payload);
 
   useEffect(() => {
+    const { error: message } = state || {};
     if (message) window.alert(message);
-  }, [message]);
+  }, [state]);
 
   return (
     <form
@@ -42,7 +53,7 @@ export default function EditQuantityButton({
         )}
       </Button>
       <p aria-live="polite" className="sr-only" role="status">
-        {message}
+        {state?.error}
       </p>
     </form>
   );

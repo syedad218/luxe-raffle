@@ -6,7 +6,7 @@ import { Spinner } from '../ui/spinner';
 import { Cart } from '@/types/Cart';
 import { checkoutAction } from '@/actions/checkout';
 import { useRouter } from 'next/navigation';
-import { generateOrderItemsFromCart } from '@/utils/orders';
+import { generateOrderItemsFromCart } from '@/lib/utils/orders';
 
 type State = {
   message: string;

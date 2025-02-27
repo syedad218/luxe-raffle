@@ -8,6 +8,16 @@ import type { Raffle } from '@/types/Raffle';
 import { CartAction } from '@/types/Cart';
 import { Spinner } from '../ui/spinner';
 
+type state = {
+  success: boolean;
+  error: string;
+};
+
+const initialState: state = {
+  success: false,
+  error: '',
+};
+
 export default function DeleteButton({
   productId,
   setOptimisticCartItems,
@@ -15,12 +25,16 @@ export default function DeleteButton({
   productId: Raffle['id'];
   setOptimisticCartItems: (action: CartAction) => void;
 }) {
-  const [message, formAction, isPending] = useActionState(removeItem, null);
+  const [state, formAction, isPending] = useActionState(
+    removeItem,
+    initialState,
+  );
   const removeItemAction = formAction.bind(null, productId);
 
   useEffect(() => {
+    const { error: message } = state || {};
     if (message) window.alert(message);
-  }, [message]);
+  }, [state]);
 
   return (
     <form
@@ -40,7 +54,7 @@ export default function DeleteButton({
         )}
       </Button>
       <p aria-live="polite" className="sr-only" role="status">
-        {message}
+        {state?.error}
       </p>
     </form>
   );

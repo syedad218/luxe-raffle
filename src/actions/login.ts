@@ -1,11 +1,12 @@
 'use server';
 
-import { updateCartWithUserId } from '@/server-functions/cart';
+import { updateUserCart } from '@/server-functions/cart';
 import { login } from '@/server-functions/login';
 import { cookies } from 'next/headers';
 import { z } from 'zod';
 import { FormState } from '@/types/Login';
 import { decryptToken } from '@/lib/token';
+import { getZodErrorObject } from '@/lib/utils/error';
 
 export const userLogin = async (
   prevState: unknown,
@@ -16,20 +17,16 @@ export const userLogin = async (
     const password = formData.get('password') as string;
 
     const { token } = await login(email, password);
+
     const cookieStore = await cookies();
     cookieStore.set('sid', token.toString());
+
+    // get userId and update cart in the database with userId
     const userId = decryptToken(token || '')?.id;
-
-    // read cartId from cookies and update it with the userId
     const cartId = cookieStore.get('cartId')?.value;
-    if (cartId && userId) {
-      updateCartWithUserId(cartId, userId);
-    }
+    if (cartId && userId) updateUserCart(cartId, userId);
 
-    return {
-      success: true,
-      errors: {},
-    };
+    return { success: true, errors: {} };
   } catch (error) {
     const rawInputs = {
       email: formData.get('email') as string,
@@ -40,10 +37,7 @@ export const userLogin = async (
       return {
         success: false,
         inputs: rawInputs,
-        errors: error.errors.reduce((acc: Record<string, string>, error) => {
-          acc[error.path[0]] = error.message;
-          return acc;
-        }, {}),
+        errors: getZodErrorObject(error),
       };
     }
 
@@ -51,7 +45,7 @@ export const userLogin = async (
       success: false,
       inputs: rawInputs,
       errors: {
-        custom: 'Invalid email or password',
+        custom: `${error instanceof Error ? error.message : String(error)}`,
       },
     };
   }

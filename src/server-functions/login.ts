@@ -2,14 +2,15 @@
 
 import { API_BASE_URL } from '@/lib/constants';
 import { z } from 'zod';
+import { errorMessages } from '@/lib/constants';
 
 const LoginResponse = z.object({
   token: z.string(),
 });
 
 const LoginRequest = z.object({
-  email: z.string().email(),
-  password: z.string().min(8),
+  email: z.string().email({ message: errorMessages.login.email }),
+  password: z.string().min(8, { message: errorMessages.login.password }),
 });
 
 export const login = async (email: string, password: string) => {
@@ -24,7 +25,7 @@ export const login = async (email: string, password: string) => {
   });
 
   if (!response.ok) {
-    throw new Error('Invalid email or password');
+    throw new Error(errorMessages.login.invalid);
   }
 
   const { token } = await response.json();

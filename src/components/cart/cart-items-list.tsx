@@ -5,7 +5,7 @@ import EditQuantityButton from '@/components/cart/edit-quantity-button';
 import DeleteButton from '@/components/cart/delete-button';
 import Image from 'next/image';
 import { OptimisticCart } from '@/types/Cart';
-import { cartReducer } from '@/utils/cart';
+import { cartReducer } from '@/lib/utils/cart';
 
 export default function CartItemsList({ items }: { items: OptimisticCart[] }) {
   const [optimisticCartItems, setOptimisticCartItems] = useOptimistic(

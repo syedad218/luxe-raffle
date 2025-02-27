@@ -7,6 +7,15 @@ import { revalidateTag } from 'next/cache';
 import { getCartExpiration } from '@/lib/utils/cart';
 import { decryptToken } from '@/lib/token';
 import { errorMessages } from '@/lib/constants';
+import { type ReadonlyRequestCookies } from 'next/dist/server/web/spec-extension/adapters/request-cookies';
+
+const getCartAndUserId = async (cookieStore: ReadonlyRequestCookies) => {
+  const existingCartId = cookieStore.get('cartId')?.value;
+  const token = cookieStore.get('sid')?.value;
+  const userId = decryptToken(token || '')?.id;
+
+  return { existingCartId, userId };
+};
 
 export async function addItem(prevState: unknown, product: Raffle) {
   if (!product) {
@@ -16,12 +25,10 @@ export async function addItem(prevState: unknown, product: Raffle) {
     };
   }
 
-  try {
-    const cookieStore = await cookies();
-    const existingCartId = cookieStore.get('cartId')?.value;
-    const token = cookieStore.get('sid')?.value;
-    const userId = decryptToken(token || '')?.id;
+  const cookieStore = await cookies();
+  const { existingCartId, userId } = await getCartAndUserId(cookieStore);
 
+  try {
     const { cartCount, cartId } = await addToCart({
       product,
       quantity: 1,
@@ -57,21 +64,16 @@ export async function updateItem(
 
   try {
     const cookieStore = await cookies();
-    const cartId = cookieStore.get('cartId')?.value as string;
-    const token = cookieStore.get('sid')?.value;
-    const userId = decryptToken(token || '')?.id;
+    const { existingCartId, userId } = await getCartAndUserId(cookieStore);
 
     const cartCount = await updateItemInCart({
       productId,
-      cartId,
+      cartId: existingCartId as string,
       updateType,
       userId,
     });
-    if (cartCount === 0) {
-      cookieStore.delete('cartCount').delete('cartId');
-    } else {
-      cookieStore.set('cartCount', cartCount.toString());
-    }
+    if (cartCount === 0) cookieStore.delete('cartCount').delete('cartId');
+    else cookieStore.set('cartCount', cartCount.toString());
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     return {
@@ -89,22 +91,17 @@ export async function removeItem(prevState: unknown, productId: Raffle['id']) {
   }
 
   const cookieStore = await cookies();
-  const cartId = cookieStore.get('cartId')?.value as string;
-  const token = cookieStore.get('sid')?.value;
-  const userId = decryptToken(token || '')?.id;
+  const { existingCartId, userId } = await getCartAndUserId(cookieStore);
 
   try {
     const cartCount = await updateItemInCart({
       productId,
-      cartId,
+      cartId: existingCartId as string,
       updateType: 'delete',
       userId,
     });
-    if (cartCount === 0) {
-      cookieStore.delete('cartCount').delete('cartId');
-    } else {
-      cookieStore.set('cartCount', cartCount.toString());
-    }
+    if (cartCount === 0) cookieStore.delete('cartCount').delete('cartId');
+    else cookieStore.set('cartCount', cartCount.toString());
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     return {

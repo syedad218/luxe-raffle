@@ -5,30 +5,12 @@ import { wait } from '@/lib/wait';
 import type { Raffle } from '@/types/Raffle';
 import {
   createCartItem,
-  getCartExpiration,
   mergeUserAndGuestCart,
   updateCartDetails,
 } from '@/lib/utils/cart';
 import { errorMessages } from '@/lib/constants';
 import type { Cart, UpdateType } from '@/types/Cart';
-import { updateExistingCartItem } from '@/lib/utils/cart';
-
-export const createEmptyCart = async (userId: number | undefined) => {
-  const cartId = crypto.randomUUID();
-
-  const cart = {
-    id: cartId,
-    userId: userId,
-    items: [],
-    totalQuantity: 0,
-    totalCost: 0,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    expiresAt: getCartExpiration().toISOString(),
-  };
-
-  return cart;
-};
+import { updateExistingCartItem, createEmptyCart } from '@/lib/utils/cart';
 
 export const updateUserCart = async (
   guestCartId: string | undefined,
@@ -122,7 +104,7 @@ export const addToCart = async ({
 
   await writeDatabase(db);
 
-  await wait(500);
+  await wait(200);
 
   return { cartCount: cart.totalQuantity, cartId: cart.id };
 };
@@ -189,7 +171,7 @@ export const updateItemInCart = async ({
 
   await writeDatabase(db);
 
-  await wait(500);
+  await wait(200);
 
   return db.carts[cartId].totalQuantity;
 };

@@ -134,3 +134,20 @@ export const mergeUserAndGuestCart = (userCart: Cart, guestCart: Cart) => {
 
   return { cartTotalQuantity, mergedCart: userCart };
 };
+
+export const createEmptyCart = async (userId: number | undefined) => {
+  const cartId = crypto.randomUUID();
+
+  const cart = {
+    id: cartId,
+    userId: userId,
+    items: [],
+    totalQuantity: 0,
+    totalCost: 0,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    expiresAt: getCartExpiration().toISOString(),
+  };
+
+  return cart;
+};

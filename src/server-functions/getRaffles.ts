@@ -11,7 +11,7 @@ export const getRaffles = async (): Promise<Raffle[]> => {
   // TODO: Make this somehow type-safe, possibly with zod
   const response = await fetch(API_BASE_URL + '/api/raffles', {
     next: {
-      revalidate: false,
+      revalidate: 3600,
       tags: ['raffles'],
     },
   });

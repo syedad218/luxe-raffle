@@ -1,13 +1,18 @@
 'use server';
 
 import { readDatabase, writeDatabase } from '@/app/(please-ignore)/api/db';
+import { decryptToken } from '@/lib/token';
 import type { Raffle } from '@/types/Raffle';
+import { cookies } from 'next/headers';
 
-export const createCart = async (cartId: string) => {
+export const createCart = async (
+  cartId: string,
+  userId: number | undefined,
+) => {
   const db = await readDatabase();
   db.carts[cartId] = {
     id: cartId,
-    userId: '',
+    userId: userId,
     items: [],
     totalQuantity: 0,
     totalCost: 0,
@@ -16,9 +21,27 @@ export const createCart = async (cartId: string) => {
     expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
   };
 
+  if (userId && db.userCart[userId] !== cartId) {
+    db.userCart[String(userId)] = cartId;
+  }
+
   await writeDatabase(db);
 
   return db.carts[cartId];
+};
+
+export const updateCartWithUserId = async (cartId: string, userId: number) => {
+  const db = await readDatabase();
+  const cart = db.carts[cartId];
+
+  if (!cart || cart.userId === userId) {
+    return;
+  }
+
+  cart.userId = userId;
+  db.carts[cartId] = cart;
+  db.userCart[String(userId)] = cartId;
+  await writeDatabase(db);
 };
 
 export const addToCart = async ({
@@ -33,12 +56,14 @@ export const addToCart = async ({
   const db = await readDatabase();
   let cart = db.carts[cartId];
   if (!cart) {
-    cart = await createCart(cartId);
+    const token = (await cookies()).get('sid')?.value;
+    const userId = decryptToken(token || '')?.id;
+    cart = await createCart(cartId, userId);
   }
   // check if item exists in cart else add it
   const existingItem = cart.items.find((item) => item.raffleId === product.id);
 
-  await new Promise((resolve) => setTimeout(resolve, 2000));
+  await new Promise((resolve) => setTimeout(resolve, Math.random() * 1000));
 
   if (existingItem) {
     existingItem.quantity += quantity;
@@ -87,6 +112,13 @@ export const removeFromCart = async ({
   }
 
   const item = cart.items[itemIndex];
+
+  // if this item is the last item in the cart, delete the cart
+  if (cart.totalQuantity === item.quantity) {
+    deleteCart(cartId, cart.userId);
+    return 0;
+  }
+
   cart.totalQuantity -= item.quantity;
   cart.totalCost -= item.cost;
   cart.items = cart.items.filter((item) => item.raffleId !== productId);
@@ -123,7 +155,7 @@ export const updateItemInCart = async ({
   }
 
   const newQuantity = existingItem.quantity + (updateType === 'plus' ? 1 : -1);
-  if (newQuantity === 0) removeFromCart({ productId, cartId });
+  if (newQuantity === 0) return removeFromCart({ productId, cartId });
 
   const singleItemCost = Number(existingItem.cost) / existingItem.quantity;
   const newTotalCost = singleItemCost * newQuantity;
@@ -150,7 +182,7 @@ export const updateItemInCart = async ({
 
 export const deleteCart = async (
   cartId: string,
-  userId: string | undefined,
+  userId: number | undefined,
 ) => {
   const db = await readDatabase();
   delete db.carts[cartId];

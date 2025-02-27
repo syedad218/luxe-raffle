@@ -2,20 +2,16 @@
 
 import { API_BASE_URL } from '@/lib/constants';
 import { OrderItem } from '@/types/OrderItem';
-import { cookies } from 'next/headers';
 
 export const order = async ({
   // items
   items,
+  token,
 }: {
   items: OrderItem[];
+  token: string;
 }) => {
   // TODO: Implement placing order for customer
-  const token = (await cookies()).get('sid')?.value;
-
-  if (!token) {
-    throw new Error('Please log in to place an order!');
-  }
 
   await new Promise((resolve) => setTimeout(resolve, 2000));
 
@@ -33,6 +29,5 @@ export const order = async ({
 
   const data = await response.json();
 
-  console.log('order successfully placed', data);
   return data;
 };

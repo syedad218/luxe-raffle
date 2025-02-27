@@ -9,7 +9,7 @@ const CartLoadingSkeleton = () => {
         <div className="w-full md:w-2/3">
           <ul className="space-y-6 divide-y divide-gray-100">
             {/* Generate 4 cart item skeletons */}
-            {[...Array(4)].map((_, index) => (
+            {[...Array(3)].map((_, index) => (
               <li key={index} className="pt-6 first:pt-0">
                 <div className="flex items-center space-x-4">
                   {/* Image skeleton */}
@@ -45,7 +45,7 @@ const CartLoadingSkeleton = () => {
         <div className="w-full md:w-1/3 drop-shadow-md">
           <div className="bg-gray-50 rounded-lg p-6 sticky top-20">
             {/* Summary title skeleton */}
-            <div className="h-6 w-32 bg-gray-200 rounded-md animate-pulse mb-4" />
+            <div className="h-6 w-32 bg-gray-200 rounded-md animate-pulse mb-4 mt-1" />
 
             {/* Subtotal skeleton */}
             <div className="flex justify-between mb-2">
@@ -74,9 +74,9 @@ const CartLoadingSkeleton = () => {
             <div className="h-12 w-full bg-gray-300 rounded-md animate-pulse" />
 
             {/* Payment methods skeleton */}
-            <div className="mt-6">
+            <div className="mt-8">
               <div className="h-4 w-24 bg-gray-200 rounded-md animate-pulse mb-3" />
-              <div className="flex flex-wrap justify-between">
+              <div className="flex flex-wrap justify-between mt-4">
                 {[...Array(5)].map((_, index) => (
                   <div
                     key={index}

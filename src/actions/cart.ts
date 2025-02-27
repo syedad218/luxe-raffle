@@ -9,13 +9,16 @@ import {
 } from '@/server-functions/cart';
 import { cookies } from 'next/headers';
 import { revalidateTag } from 'next/cache';
+import { decryptToken } from '@/lib/token';
 
 export async function addItem(prevState: unknown, product: Raffle) {
   if (!product) {
     return 'No product provided';
   }
 
-  let cartId = (await cookies()).get('cartId')?.value;
+  const cookieStore = await cookies();
+
+  let cartId = cookieStore.get('cartId')?.value;
 
   if (!cartId) {
     cartId = await createCartAndSetCookie();
@@ -23,7 +26,7 @@ export async function addItem(prevState: unknown, product: Raffle) {
 
   try {
     const cartCount = await addToCart({ product, quantity: 1, cartId });
-    (await cookies()).set('cartCount', cartCount.toString());
+    cookieStore.set('cartCount', cartCount.toString());
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     return `Error adding item to cart: ${errorMessage}`;
@@ -41,7 +44,8 @@ export async function updateItem(
     return 'No product provided';
   }
 
-  const cartId = (await cookies()).get('cartId')?.value;
+  const cookieStore = await cookies();
+  const cartId = cookieStore.get('cartId')?.value;
 
   if (!cartId) {
     return 'No cart found';
@@ -54,7 +58,11 @@ export async function updateItem(
       cartId,
       updateType,
     });
-    (await cookies()).set('cartCount', cartCount.toString());
+    if (cartCount === 0) {
+      cookieStore.delete('cartCount').delete('cartId');
+    } else {
+      cookieStore.set('cartCount', cartCount.toString());
+    }
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     return `Error updating item in cart: ${errorMessage}`;
@@ -68,7 +76,8 @@ export async function removeItem(prevState: unknown, productId: Raffle['id']) {
     return 'No product provided';
   }
 
-  const cartId = (await cookies()).get('cartId')?.value;
+  const cookieStore = await cookies();
+  const cartId = cookieStore.get('cartId')?.value;
 
   if (!cartId) {
     return 'No cart found';
@@ -77,7 +86,11 @@ export async function removeItem(prevState: unknown, productId: Raffle['id']) {
   try {
     await new Promise((resolve) => setTimeout(resolve, 500));
     const cartCount = await removeFromCart({ productId, cartId });
-    (await cookies()).set('cartCount', cartCount.toString());
+    if (cartCount === 0) {
+      cookieStore.delete('cartCount').delete('cartId');
+    } else {
+      cookieStore.set('cartCount', cartCount.toString());
+    }
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     return `Error removing item from cart: ${errorMessage}`;
@@ -88,8 +101,11 @@ export async function removeItem(prevState: unknown, productId: Raffle['id']) {
 
 export async function createCartAndSetCookie() {
   const cartId = crypto.randomUUID();
-  await createCart(cartId);
-  (await cookies()).set('cartId', cartId!, {
+  const cookiesStore = await cookies();
+  const token = cookiesStore.get('sid')?.value;
+  const userId = decryptToken(token || '')?.id;
+  await createCart(cartId, userId);
+  cookiesStore.set('cartId', cartId!, {
     expires: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
   });
   return cartId;

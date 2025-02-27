@@ -12,7 +12,7 @@ export const cartItemSchema = z.object({
 
 export const cartSchema = z.object({
   id: z.string(),
-  userId: z.string(),
+  userId: z.number().optional(),
   items: z.array(cartItemSchema),
   totalQuantity: z.number(),
   totalCost: z.number(),

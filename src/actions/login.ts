@@ -1,9 +1,11 @@
 'use server';
 
+import { updateCartWithUserId } from '@/server-functions/cart';
 import { login } from '@/server-functions/login';
 import { cookies } from 'next/headers';
 import { z } from 'zod';
 import { FormState } from '@/types/Login';
+import { decryptToken } from '@/lib/token';
 
 export const userLogin = async (
   prevState: unknown,
@@ -13,8 +15,16 @@ export const userLogin = async (
     const email = formData.get('email') as string;
     const password = formData.get('password') as string;
 
-    const { token: userId } = await login(email, password);
-    (await cookies()).set('sid', userId.toString());
+    const { token } = await login(email, password);
+    const cookieStore = await cookies();
+    cookieStore.set('sid', token.toString());
+    const userId = decryptToken(token || '')?.id;
+
+    // read cartId from cookies and update it with the userId
+    const cartId = cookieStore.get('cartId')?.value;
+    if (cartId && userId) {
+      updateCartWithUserId(cartId, userId);
+    }
 
     return {
       success: true,

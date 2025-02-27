@@ -9,26 +9,34 @@ import { redirect } from 'next/navigation';
 
 export const checkoutAction = async (
   prevState: unknown,
-  payload: { cartId: string; userId: string | undefined; items: OrderItem[] },
+  payload: { cartId: string; userId: number | undefined; items: OrderItem[] },
 ) => {
   // TODO: Implement this. Redirect to /account
   const { cartId, userId, items } = payload;
+  const cookieStore = await cookies();
+  const token = cookieStore.get('sid')?.value;
 
-  if (!userId) {
-    redirect('/login?redirect=/cart');
+  if (!token) {
+    return {
+      message: 'Please login to place an order! Do you want to login?',
+      redirect: '/login?redirect=/cart',
+    };
   }
 
   try {
-    await order({ items });
+    await order({ items, token });
     // delete cart for the user on successful order
     await deleteCart(cartId, userId);
-    (await cookies()).delete('cartCount');
+    cookieStore.delete('cartCount').delete('cartId');
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
-    return `Failed to place order! ${errorMessage}`;
+    return {
+      message: `Something went wrong! ${errorMessage}`,
+    };
   }
 
   revalidateTag('orders');
+  revalidateTag('cart');
 
   redirect('/account');
 };

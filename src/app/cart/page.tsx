@@ -18,7 +18,7 @@ export default async function CartPage() {
           <h2 className="text-2xl font-bold mb-6">
             Your Cart ({items.length} items)
           </h2>
-          <div className="flex flex-col md:flex-row gap-8 mb-8">
+          <div className="flex flex-col md:flex-row gap-8 mb-6">
             {/* Left column - Cart items */}
             <CartItemsList items={items} />
 

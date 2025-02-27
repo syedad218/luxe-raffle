@@ -1,27 +1,47 @@
 'use client';
 
-import { useActionState } from 'react';
+import { useActionState, useEffect } from 'react';
 import { Button } from '../ui/button';
 import { Spinner } from '../ui/spinner';
 import { Cart } from '@/types/Cart';
 import { checkoutAction } from '@/actions/checkout';
+import { useRouter } from 'next/navigation';
+import { generateOrderItemsFromCart } from '@/utils/orders';
+
+type State = {
+  message: string;
+  redirect?: string;
+};
+
+const initialState: State = {
+  message: '',
+  redirect: '',
+};
 
 export default function CheckoutButton({ cart }: { cart: Cart | undefined }) {
   const { userId, items } = cart as Cart;
   const cartId = cart?.id as string;
+  const router = useRouter();
+  const orderItems = generateOrderItemsFromCart(items);
 
-  const orderItems = items?.map((item) => ({
-    id: item.raffleId,
-    quantity: item.quantity,
-    imageSrc: item.imageSrc,
-    name: item.name,
-    description: item.description,
-    price: item.cost,
-  }));
-
-  const [message, formAction, isPending] = useActionState(checkoutAction, null);
+  const [state, formAction, isPending] = useActionState(
+    checkoutAction,
+    initialState,
+  );
   const payload = { cartId, userId, items: orderItems };
   const orderAction = formAction.bind(null, payload);
+
+  useEffect(() => {
+    const { message, redirect } = state;
+    if (redirect) {
+      const confirmation = window.confirm(message);
+      if (confirmation) {
+        router.push(redirect);
+      }
+    } else if (message) {
+      window.alert(message);
+    }
+  }, [state, router]);
 
   if (!cart) {
     return null;
@@ -36,7 +56,7 @@ export default function CheckoutButton({ cart }: { cart: Cart | undefined }) {
         {isPending ? <Spinner size="sm" variant="default" /> : 'Go to checkout'}
       </Button>
       <p aria-live="polite" className="sr-only" role="status">
-        {message}
+        {state.message}
       </p>
     </form>
   );

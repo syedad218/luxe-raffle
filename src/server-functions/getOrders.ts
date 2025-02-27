@@ -12,7 +12,7 @@ export const getOrders = async (token: string) => {
       Authorization: `Bearer ${token}`,
     },
     next: {
-      revalidate: false,
+      revalidate: 3600,
       tags: ['orders'],
     },
   });

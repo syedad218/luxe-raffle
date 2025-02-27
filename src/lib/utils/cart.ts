@@ -1,49 +1,23 @@
-import type {
-  CartAction,
-  UpdateType,
-  CartItem,
-  OptimisticCart,
-} from '@/types/Cart';
+import type { UpdateType, CartItem } from '@/types/Cart';
 import { Raffle } from '@/types/Raffle';
 import { Cart } from '@/types/Cart';
+import { CART_EXPIRATION_DURATION } from '@/lib/constants';
 
-export const updateCartItem = (
-  item: CartItem,
-  updateType: UpdateType,
-): OptimisticCart | null => {
-  if (updateType === 'delete') return { ...item, isPending: true };
+export const createEmptyCart = async (userId: number | undefined) => {
+  const cartId = crypto.randomUUID();
 
-  const newQuantity = item.quantity + (updateType === 'plus' ? 1 : -1);
-  if (newQuantity === 0) return { ...item, isPending: true };
-
-  const singleItemCost = Number(item.cost) / item.quantity;
-  const newTotalCost = singleItemCost * newQuantity;
-
-  return {
-    ...item,
-    quantity: newQuantity,
-    cost: newTotalCost,
+  const cart = {
+    id: cartId,
+    userId: userId,
+    items: [],
+    totalQuantity: 0,
+    totalCost: 0,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    expiresAt: getCartExpiration().toISOString(),
   };
-};
 
-export const cartReducer = (
-  state: OptimisticCart[],
-  action: CartAction,
-): OptimisticCart[] => {
-  const currentItems = state;
-
-  const { raffleId } = action.payload;
-  const updateType = action.type;
-
-  const updatedItems = currentItems
-    .map((item) =>
-      item.raffleId === raffleId ? updateCartItem(item, updateType) : item,
-    )
-    .filter(Boolean) as OptimisticCart[];
-
-  if (updatedItems.length === 0) return [];
-
-  return updatedItems;
+  return cart;
 };
 
 export const createCartItem = (product: Raffle, quantity = 1): CartItem => {
@@ -59,7 +33,7 @@ export const createCartItem = (product: Raffle, quantity = 1): CartItem => {
 };
 
 export const getCartExpiration = (): Date => {
-  return new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+  return new Date(Date.now() + CART_EXPIRATION_DURATION);
 };
 
 export const updateCartDetails = (
@@ -133,21 +107,4 @@ export const mergeUserAndGuestCart = (userCart: Cart, guestCart: Cart) => {
   userCart.expiresAt = getCartExpiration().toISOString();
 
   return { cartTotalQuantity, mergedCart: userCart };
-};
-
-export const createEmptyCart = async (userId: number | undefined) => {
-  const cartId = crypto.randomUUID();
-
-  const cart = {
-    id: cartId,
-    userId: userId,
-    items: [],
-    totalQuantity: 0,
-    totalCost: 0,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    expiresAt: getCartExpiration().toISOString(),
-  };
-
-  return cart;
 };

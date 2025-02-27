@@ -1,5 +1,7 @@
 export const API_BASE_URL = 'http://localhost:3000';
 
+export const CART_EXPIRATION_DURATION = 30 * 24 * 60 * 60 * 1000; // 30 days
+
 export const errorMessages = {
   login: {
     email: 'Please enter a valid email address',

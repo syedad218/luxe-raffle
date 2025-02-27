@@ -1,12 +1,16 @@
 import { LoginForm } from '@/components/login-form/login-form';
 import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
+import { redirect as nextRedirect } from 'next/navigation';
 
-export default async function LoginPage() {
+type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
+
+export default async function LoginPage(props: { searchParams: SearchParams }) {
+  const searchParams = await props.searchParams;
+  const { redirect } = searchParams;
   const token = (await cookies()).get('sid')?.value;
 
   if (token) {
-    redirect('/account');
+    nextRedirect((redirect as string) ?? '/account');
   }
 
   return (

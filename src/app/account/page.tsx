@@ -1,22 +1,14 @@
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { LogOut, ShoppingBag } from 'lucide-react';
-import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
+import { ShoppingBag } from 'lucide-react';
 import OrderHistory from '@/components/account/order-history';
 import OrderHistoryLoadingSkeleton from '@/components/loading-skeleton/order-history';
 import { Suspense } from 'react';
 import ErrorBoundary from '@/components/error-boundary';
 import { ErrorPage } from '@/components/error';
 import UserName from '@/components/account/user-name';
+import Logout from '@/components/account/logout';
 
 export default async function AccountPage() {
-  const handleLogout = async () => {
-    'use server';
-    (await cookies()).delete('sid');
-    redirect('/login');
-  };
-
   return (
     <div className="container mx-auto px-4 py-8">
       <Card className="w-full max-w-4xl mx-auto">
@@ -31,11 +23,7 @@ export default async function AccountPage() {
               <UserName />
             </Suspense>
           </div>
-          <form action={handleLogout}>
-            <Button variant="outline" size="sm">
-              <LogOut className="mr-2 h-4 w-4" /> Logout
-            </Button>
-          </form>
+          <Logout />
         </CardHeader>
 
         <CardContent>

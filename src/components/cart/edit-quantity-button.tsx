@@ -1,28 +1,37 @@
 'use client';
 
-import { useActionState } from 'react';
+import { useActionState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Cart, CartItem } from '@/types/Cart';
 import { Minus, Plus } from 'lucide-react';
-import { updateItem } from './actions';
+import { updateItem } from '@/actions/cart';
 import type { Raffle } from '@/types/Raffle';
+import { CartAction } from '@/types/Cart';
 
 export default function EditQuantityButton({
   type,
   productId,
+  setOptimisticCartItems,
 }: {
   type: 'plus' | 'minus';
   productId: Raffle['id'];
+  setOptimisticCartItems: (action: CartAction) => void;
 }) {
   const [message, formAction] = useActionState(updateItem, null);
   const payload = { productId, updateType: type };
   const updateItemAction = formAction.bind(null, payload);
 
+  useEffect(() => {
+    if (message) window.alert(message);
+  }, [message]);
+
   return (
     <form
       action={async () => {
-        // optimisticUpdate(payload.merchandiseId, type);
-        updateItemAction();
+        setOptimisticCartItems({
+          type,
+          payload: { raffleId: productId },
+        });
+        await updateItemAction();
       }}
     >
       <Button variant="outline" size="icon">

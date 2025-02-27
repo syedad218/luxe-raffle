@@ -48,8 +48,12 @@ export async function updateItem(
   }
 
   try {
-    console.log('updateItem', productId, updateType, cartId);
-    const cartCount = await updateItemInCart({ productId, cartId, updateType });
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    const cartCount = await updateItemInCart({
+      productId,
+      cartId,
+      updateType,
+    });
     (await cookies()).set('cartCount', cartCount.toString());
   } catch (error: Error | any) {
     return `Error updating item in cart: ${error.message}`;
@@ -70,6 +74,7 @@ export async function removeItem(prevState: any, productId: Raffle['id']) {
   }
 
   try {
+    await new Promise((resolve) => setTimeout(resolve, 500));
     const cartCount = await removeFromCart({ productId, cartId });
     (await cookies()).set('cartCount', cartCount.toString());
   } catch (error: Error | any) {

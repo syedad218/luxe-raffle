@@ -117,29 +117,25 @@ export const updateItemInCart = async ({
     throw new Error('Cart not found');
   }
 
-  const item = cart.items.find((item) => item.raffleId === productId);
-  if (!item) {
+  const existingItem = cart.items.find((item) => item.raffleId === productId);
+  if (!existingItem) {
     throw new Error('Item not found in cart');
   }
 
-  if (updateType === 'plus') {
-    item.quantity += 1;
-    item.cost += item.cost;
-    cart.totalQuantity += 1;
-    cart.totalCost += item.cost;
-  } else {
-    // if quantity is 1, remove the item
-    if (item.quantity === 1) {
-      cart.totalQuantity -= item.quantity;
-      cart.totalCost -= item.cost;
-      cart.items = cart.items.filter((item) => item.raffleId !== productId);
-    } else {
-      item.quantity -= 1;
-      item.cost -= item.cost;
-      cart.totalQuantity -= 1;
-      cart.totalCost -= item.cost;
-    }
-  }
+  const newQuantity = existingItem.quantity + (updateType === 'plus' ? 1 : -1);
+  if (newQuantity === 0) removeFromCart({ productId, cartId });
+
+  const singleItemCost = Number(existingItem.cost) / existingItem.quantity;
+  const newTotalCost = singleItemCost * newQuantity;
+
+  const newCartQuantity = cart.totalQuantity + (updateType === 'plus' ? 1 : -1);
+  const newCartCost =
+    cart.totalCost + (updateType === 'plus' ? singleItemCost : -singleItemCost);
+
+  existingItem.quantity = newQuantity;
+  existingItem.cost = newTotalCost;
+  cart.totalQuantity = newCartQuantity;
+  cart.totalCost = newCartCost;
 
   cart.updatedAt = new Date().toISOString();
   cart.expiresAt = new Date(

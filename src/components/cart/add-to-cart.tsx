@@ -3,7 +3,7 @@
 import { useActionState } from 'react';
 import { Button } from '../ui/button';
 import type { Raffle } from '@/types/Raffle';
-import { addItem } from './actions';
+import { addItem } from '@/actions/cart';
 import { Spinner } from '../ui/spinner';
 
 const AddToCart = ({ product }: { product: Raffle }) => {

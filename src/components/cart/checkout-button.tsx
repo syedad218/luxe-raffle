@@ -3,18 +3,25 @@
 import { useActionState } from 'react';
 import { Button } from '../ui/button';
 import { Spinner } from '../ui/spinner';
+import { Cart } from '@/types/Cart';
+import { checkoutAction } from '@/actions/checkout';
 
-export default function CheckoutButton({
-  checkoutAction,
-  orderItems,
-  cartId,
-  userId,
-}: {
-  checkoutAction: any;
-  orderItems: any;
-  cartId: any;
-  userId: any;
-}) {
+export default function CheckoutButton({ cart }: { cart: Cart | undefined }) {
+  if (!cart) {
+    return null;
+  }
+
+  const { id: cartId, userId, items } = cart;
+
+  const orderItems = items.map((item) => ({
+    id: item.raffleId,
+    quantity: item.quantity,
+    imageSrc: item.imageSrc,
+    name: item.name,
+    description: item.description,
+    price: item.cost,
+  }));
+
   const [message, formAction, isPending] = useActionState(checkoutAction, null);
   const orderAction = formAction.bind(null, {
     cartId,

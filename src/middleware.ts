@@ -7,8 +7,11 @@ export function middleware(request: NextRequest) {
   if (path === '/account' || path.startsWith('/account/')) {
     const userToken = request.cookies.get('sid');
 
-    if (!userToken)
-      return NextResponse.redirect(new URL('/login', request.url));
+    if (!userToken) {
+      const redirectUrl = new URL('/login', request.url);
+      redirectUrl.searchParams.set('redirect', path);
+      return NextResponse.redirect(redirectUrl);
+    }
   }
 
   return NextResponse.next();

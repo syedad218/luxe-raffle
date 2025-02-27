@@ -8,8 +8,8 @@ import { revalidateTag } from 'next/cache';
 import { redirect } from 'next/navigation';
 
 export const checkoutAction = async (
-  prevState: any,
-  payload: { cartId: string; userId: string; items: OrderItem[] },
+  prevState: unknown,
+  payload: { cartId: string; userId: string | undefined; items: OrderItem[] },
 ) => {
   // TODO: Implement this. Redirect to /account
   const { cartId, userId, items } = payload;
@@ -23,9 +23,9 @@ export const checkoutAction = async (
     // delete cart for the user on successful order
     await deleteCart(cartId, userId);
     (await cookies()).delete('cartCount');
-  } catch (e) {
-    console.error(e);
-    return 'Failed to place order!';
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    return `Failed to place order! ${errorMessage}`;
   }
 
   revalidateTag('orders');

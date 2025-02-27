@@ -5,6 +5,7 @@ import { ShoppingBag, Calendar, Ticket } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { formatCurrency, formatDate } from '@/lib/utils/formatting';
 import { cookies } from 'next/headers';
+import Image from 'next/image';
 
 export default async function OrderHistory() {
   const userToken = (await cookies()).get('sid')?.value;
@@ -15,7 +16,7 @@ export default async function OrderHistory() {
       {orders?.length === 0 ? (
         <div className="text-center py-8 text-gray-500">
           <ShoppingBag className="h-12 w-12 mx-auto mb-4 opacity-50" />
-          <p>You haven't purchased any tickets yet.</p>
+          <p>You haven&apos;t purchased any tickets yet.</p>
           <Link href="/">
             <Button className="mt-4">Browse Products</Button>
           </Link>
@@ -49,9 +50,11 @@ export default async function OrderHistory() {
                     <div className="flex items-start gap-4">
                       {item.imageSrc && (
                         <div className="rounded w-16 h-16 overflow-hidden bg-gray-100 flex-shrink-0">
-                          <img
+                          <Image
                             src={item.imageSrc}
                             alt={item.name}
+                            width={64}
+                            height={64}
                             className="w-full h-full object-cover"
                           />
                         </div>

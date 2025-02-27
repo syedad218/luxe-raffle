@@ -1,8 +1,18 @@
+import { Suspense } from 'react';
+import RafflesLoadingSkeleton from '@/components/loading-skeleton/home';
 import RafflesGrid from '@/components/raffles-grid/raffles-grid';
-import { getRaffles } from '@/server-functions/getRaffles';
+import ErrorBoundary from '@/components/error-boundary';
+import { ErrorPage } from '@/components/error';
 
 export default async function Home() {
-  const raffles = await getRaffles();
-
-  return <RafflesGrid raffles={raffles} />;
+  return (
+    <div className="container mx-auto px-8 py-8">
+      <h1 className="text-3xl font-bold text-center mb-8">LuxeRaffle</h1>
+      <ErrorBoundary fallback={ErrorPage}>
+        <Suspense fallback={<RafflesLoadingSkeleton />}>
+          <RafflesGrid />
+        </Suspense>
+      </ErrorBoundary>
+    </div>
+  );
 }

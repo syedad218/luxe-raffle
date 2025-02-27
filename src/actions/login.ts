@@ -6,7 +6,7 @@ import { z } from 'zod';
 import { FormState } from '@/types/Login';
 
 export const userLogin = async (
-  prevState: any,
+  prevState: unknown,
   formData: FormData,
 ): Promise<FormState> => {
   try {
@@ -20,7 +20,7 @@ export const userLogin = async (
       success: true,
       errors: {},
     };
-  } catch (error: any) {
+  } catch (error) {
     const rawInputs = {
       email: formData.get('email') as string,
       password: formData.get('password') as string,

@@ -148,7 +148,10 @@ export const updateItemInCart = async ({
   return cart.totalQuantity;
 };
 
-export const deleteCart = async (cartId: string, userId: any) => {
+export const deleteCart = async (
+  cartId: string,
+  userId: string | undefined,
+) => {
   const db = await readDatabase();
   delete db.carts[cartId];
   // delete also from userCart if exists

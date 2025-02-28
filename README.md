@@ -15,8 +15,7 @@
       </td>
       <td align="center" width="200">
         <a href="https://ui.shadcn.com/">
-          <img src="https://ui.shadcn.com/apple-touch-icon.png
-          " width="80" height="75" alt="Shadcn/UI" style="background-color: transparent; padding: 10px; border-radius: 20px;" />
+          <img src="https://ui.shadcn.com/apple-touch-icon.png" width="80" height="75" alt="Shadcn/UI" style="background-color: transparent; padding: 10px; border-radius: 20px;" />
         </a>
       </td>
       <td align="center" width="200">

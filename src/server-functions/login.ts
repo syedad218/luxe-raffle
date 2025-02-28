@@ -3,6 +3,7 @@
 import { API_BASE_URL } from '@/lib/constants';
 import { z } from 'zod';
 import { errorMessages } from '@/lib/constants';
+import { wait } from '@/lib/wait';
 
 const LoginResponse = z.object({
   token: z.string(),
@@ -15,7 +16,7 @@ const LoginRequest = z.object({
 
 export const login = async (email: string, password: string) => {
   // TODO: Implement login and store token safely
-  await new Promise((resolve) => setTimeout(resolve, 2000));
+  await wait(500);
 
   const validatedCredentials = LoginRequest.parse({ email, password });
 

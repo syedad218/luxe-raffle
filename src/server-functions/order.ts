@@ -1,6 +1,6 @@
 'use server';
 
-import { API_BASE_URL } from '@/lib/constants';
+import { API_BASE_URL, errorMessages } from '@/lib/constants';
 import { OrderItem } from '@/types/OrderItem';
 
 export const order = async ({
@@ -24,7 +24,7 @@ export const order = async ({
   });
 
   if (!response.ok) {
-    throw new Error('Failed to place order');
+    throw new Error(errorMessages.order.placeOrderfailed + response.statusText);
   }
 
   const data = await response.json();

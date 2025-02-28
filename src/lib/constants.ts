@@ -13,4 +13,11 @@ export const errorMessages = {
     noCart: 'No cart found',
     itemNotFound: 'Item not found in cart',
   },
+  order: {
+    placeOrderfailed: 'Failed to place order! ',
+    getOrdersFailed: 'Failed to get orders! ',
+  },
+  raffles: {
+    getRafflesFailed: 'Failed to get raffles! ',
+  },
 };

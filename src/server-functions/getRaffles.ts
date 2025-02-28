@@ -1,6 +1,6 @@
 'use server';
 
-import { API_BASE_URL } from '@/lib/constants';
+import { API_BASE_URL, errorMessages } from '@/lib/constants';
 import { raffleSchema } from '@/lib/schemas/raffle';
 import { Raffle } from '@/types/Raffle';
 import { z } from 'zod';
@@ -16,7 +16,9 @@ export const getRaffles = async (): Promise<Raffle[]> => {
     },
   });
   if (!response.ok) {
-    throw new Error('Failed to fetch raffles! ' + response.statusText);
+    throw new Error(
+      errorMessages.raffles.getRafflesFailed + response.statusText,
+    );
   }
   const data = await response.json();
   const validatedRaffles = RafflesResponseSchema.parse(data);

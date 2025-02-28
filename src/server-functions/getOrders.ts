@@ -3,6 +3,7 @@
 import { API_BASE_URL } from '@/lib/constants';
 import { z } from 'zod';
 import { orderSchema } from '@/lib/schemas/order';
+import { errorMessages } from '@/lib/constants';
 
 export const getOrders = async (token: string) => {
   // TODO: Implement getting orders to display on the account page
@@ -18,7 +19,7 @@ export const getOrders = async (token: string) => {
   });
 
   if (!response.ok) {
-    throw new Error('Failed to fetch orders! ' + response.statusText);
+    throw new Error(errorMessages.order.getOrdersFailed + response.statusText);
   }
 
   const data = await response.json();

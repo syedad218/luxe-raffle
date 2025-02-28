@@ -11,6 +11,7 @@ export default async function LoginPage(props: { searchParams: SearchParams }) {
   const token = (await cookies()).get('sid')?.value;
 
   if (token) {
+    // when the user is already logged in, redirect to the account page
     nextRedirect((redirect as string) ?? '/account');
   }
 

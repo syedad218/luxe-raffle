@@ -1,6 +1,30 @@
 # LuxeRaffle E-commerce Features
 
-This PR implements core e-commerce functionality for the LuxeRaffle application, including cart management, checkout flow, order history, and user authentication.
+## Project Overview
+
+LuxeRaffle is a luxury car raffle platform that allows users to purchase tickets for a chance to win high-end automobiles. This PR implements core e-commerce functionality including cart management, checkout flow, order history, and user authentication.
+
+## Technologies Used
+
+- **Framework**: Next.js 15.1.6 with App Router
+- **UI**: React 19.0.0 with Server Components
+- **Styling**: Tailwind CSS 3.4.1 with Shadcn/UI components
+- **Type Safety**: TypeScript 5
+- **Form Validation**: Zod 3.24.1
+- **Icons**: Lucide React 0.473.0
+- **Authentication**: Custom token-based auth with cookie persistence
+- **Development**: Turbopack for faster dev experience
+
+## Key Concepts
+
+- **Server Actions**: Used for server-side data mutations with client-side form handling
+- **Optimistic Updates**: Implemented with `useOptimistic` hook for responsive UX
+- **Streaming UI**: Leveraged Suspense and streaming for progressive rendering
+- **React Transitions**: Using `startTransition` to ensure proper order of UI updates
+- **Error Boundaries**: Graceful error handling with custom fallbacks
+- **RSC + RCC Architecture**: Hybrid approach combining React Server Components with Client Components
+- **Middleware**: Route protection and auth verification
+- **Data Caching**: Strategic cache invalidation with revalidation tags
 
 ## Key Changes
 

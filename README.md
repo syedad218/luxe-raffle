@@ -1,98 +1,111 @@
-# 🏎️ LuxeRaffle - Take-Home Challenge
+# LuxeRaffle E-commerce Features
 
-## 🎯 Overview
+This PR implements core e-commerce functionality for the LuxeRaffle application, including cart management, checkout flow, order history, and user authentication.
 
-Welcome to LuxeRaffle - where car dreams come true! We're building an exciting platform for car enthusiasts to win their dream rides through exclusive raffles. While most of the foundation is in place, we need your expertise to add the finishing touches and make it shine!
+## Key Changes
 
-## 🎨 Your Mission
+### Cart Management
 
-Transform our platform by implementing these key features:
+- Implemented full cart functionality with add, update, and remove server actions
+- Added cart persistence with cookie using `cartId`
+- Created optimistic UI updates for better user experience
+- **Added Guest Cart and User Cart merge logic upon login for seamless shopping experience**
+- Display error messages and reset cart state on error in cart actions
 
-1. Create an engaging landing page showcasing luxury car raffles
-2. Enable smooth ticket purchases through the cart system
-3. Build a user-friendly cart management experience
-4. Implement secure customer authentication
-5. Create a seamless checkout process
-6. Design a personal account dashboard for purchase tracking
+```typescript
+// Example of optimistic UI update in cart
+export const cartReducer = (
+  state: OptimisticCart[],
+  action: CartAction,
+): OptimisticCart[] => {
+  // Optimistically update cart state
+  return newCart;
+};
 
-## 🚀 Technical Foundation
+// Guest cart to user cart merging functionality
+export const mergeUserAndGuestCart = (userCart: Cart, guestCart: Cart) => {
+  //1. If both user and guest cart are empty, return empty cart
 
-- **API Status**: Our API is still in development (sometimes slow, occasionally grumpy) - but fixing that is not part of this assignment!
-- **Demo Account**: Take it for a spin with `jane.doe@gmail.com` / `applejuice` once the login is implemente.
-- **Database**: Check `/data.db.json` for our simulated database.
-- **API Simulation**: Our simulated API can be found in `/src/app/(please-ignore)/api` but should not be touched for this assignment.
-  - `POST /api/auth/token` received `email` and `password` and returns a `token`.
-  - `GET /api/raffles` returns a list of all available raffles.
-  - `GET /api/orders` returns a list of all orders for an authenticated customer. A bearer token is expected in the `Authorization` header.
-  - `POST /api/orders` receives `items` of shape `OrderItem` and returns an order id for an authenticated customer. A bearer token is expected in the `Authorization` header.
-- **Token Utilities**: Make use of our secure `decryptToken` function from `/src/lib/token.ts` to get the token payload after calling the token api.
-- **Known Issue**: Direct access to sub-pages returns 404 (except home page). For now, navigate from home!
+  //2. If user cart doesn't exist, update guest cart as user new user cart
 
-## 🎯 Core Requirements
+  //3. If users cart exists, but guest cart is empty, return user cart as is
 
-1. **Homepage Raffle Display**
+  //4. Merge guest cart items into user cart, if user cart exists
 
-   - Use `/src/server-functions/getRaffles.ts` to fetch and display raffles
-   - Validate API responses with Zod schema
-   - Show loading animation during API requests
-   - Display error messages for failed requests
-   - Implement caching for faster subsequent loads
-
-2. **Shopping Cart Integration**
-
-   - Enable "Add to cart" functionality
-   - Update cart icon in header with item count
-   - Implement server-side rendering for cart
-
-3. **Cart Management Page**
-
-   - Display detailed car information for cart items
-   - Allow quantity adjustments and item removal
-   - Show cart total
-
-4. **User Authentication**
-
-   - Connect login form to `/src/server-functions/login.ts`
-   - Validate login responses with Zod schema
-   - Show error messages for failed login attempts
-   - Update header to show login status
-   - Implement logout functionality
-
-5. **Optional: Checkout Flow**
-
-   - Create checkout process
-   - Redirect to `/account` after successful purchase
-   - Display order history in account dashboard
-
-6. **Optional: Route Fix**
-
-   - Resolve 404 errors on direct subpage access
-
-## 💻 Technical Guidelines
-
-Build with modern React patterns using:
-
-- React Server Components (default)
-- Strategic client components
-- TypeScript (strict mode)
-- Zod validation
-- Performance optimizations
-- Server-side state management
-
-## 🏃‍♂️ Quick Start
-
-```bash
-npm install
-npm run dev
-# Open http://localhost:3000 and start coding!
+  return { cartTotalQuantity: userCart.totalQuantity, mergedCart: userCart };
+};
 ```
 
-## 🤝 Follow-Up Session
+### User Authentication
 
-We'll pair program to:
+- Added login functionality with form validation
+- Implemented protected routes with middleware
+- Added user session management using sid cookie
 
-- Polish any remaining features
-- Implement cart reservations
-- Create detailed raffle pages
+```typescript
+// Middleware for protected routes
+export function middleware(request: NextRequest) {
+  const path = request.nextUrl.pathname;
 
-Ready to build something awesome? Let's get racing! 🏁
+  if (path === '/account' || path.startsWith('/account/')) {
+    const userToken = request.cookies.get('sid');
+
+    if (!userToken) {
+      const redirectUrl = new URL('/login', request.url);
+      redirectUrl.searchParams.set('redirect', path);
+      return NextResponse.redirect(redirectUrl);
+    }
+  }
+
+  return NextResponse.next();
+}
+```
+
+### Checkout Process
+
+- Added checkout flow with order confirmation
+- Added server-side order processing
+- Guest checkout is not possible at the moment, only logged in users can place orders
+
+### Order History
+
+- Created order history component in user account
+- Added detailed order information display
+
+### UI Improvements
+
+- Added loading skeletons for better perceived performance
+- Implemented error boundaries for graceful error handling
+- Added responsive design for cart and checkout pages
+- Ability to reset error boundary and re-render by clicking on try again button
+- Detailed Cart Page with a dedicated section for order summary and checkout button
+
+```tsx
+// Loading skeleton example
+<ErrorBoundary fallback={ErrorPage}>
+  <Suspense fallback={<OrderHistoryLoadingSkeleton />}>
+    <OrderHistory />
+  </Suspense>
+</ErrorBoundary>
+```
+
+### Type Safety
+
+- Added Zod schemas for runtime validation
+- Improved TypeScript types throughout the application
+
+### Bug Fixes
+
+- Fixed incorrect price format in Koenigsegg Jesko item (changed from string to number)
+- Updated cart and order data structure to support detailed order information
+- Improved error handling across the application
+- Added NotFound 404 route and fixed sub-route navigation issue
+
+## Technical Details
+
+- Used React Server Components where appropriate
+- Implemented server actions for data mutations
+- Added optimistic updates for better UX
+- Used cookies for cart and session persistence
+- Added proper data validation with Zod
+- Added proper caching and cache invalidations using revalidateTag and time based cache revalidation

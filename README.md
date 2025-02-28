@@ -1,32 +1,55 @@
 # LuxeRaffle E-commerce Features
 
+<div align="center">
+  <table border="0">
+    <tr>
+      <td align="center" width="200">
+        <a href="https://nextjs.org/">
+          <img src="https://assets.vercel.com/image/upload/v1662130559/nextjs/Icon_dark_background.png" width="80" height="80" alt="Next.js" />
+        </a>
+        <br />Next.js 15
+      </td>
+      <td align="center" width="200">
+        <a href="https://react.dev/">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg" width="80" height="80" alt="React" />
+        </a>
+        <br />React 19
+      </td>
+      <td align="center" width="200">
+        <a href="https://ui.shadcn.com/">
+          <img src="https://avatars.githubusercontent.com/u/124599?v=4" width="80" height="80" alt="Shadcn/UI" />
+        </a>
+        <br />Shadcn/UI
+      </td>
+    </tr>
+  </table>
+</div>
+
 ## Project Overview
 
 LuxeRaffle is a luxury car raffle platform that allows users to purchase tickets for a chance to win high-end automobiles. This PR implements core e-commerce functionality including cart management, checkout flow, order history, and user authentication.
 
 ## Technologies Used
 
-- **Framework**: Next.js 15.1.6 with App Router
-- **UI**: React 19.0.0 with Server Components
-- **Styling**: Tailwind CSS 3.4.1 with Shadcn/UI components
-- **Type Safety**: TypeScript 5
-- **Form Validation**: Zod 3.24.1
-- **Icons**: Lucide React 0.473.0
-- **Authentication**: Custom token-based auth with cookie persistence
-- **Development**: Turbopack for faster dev experience
+- **▲ Next.js**: 15.1.6 with App Router
+- **⚛️ React**: 19.0.0 with Server Components
+- **🎨 Tailwind CSS**: 3.4.1 with Shadcn/UI components
+- **🔷 TypeScript**: 5
+- **🛡️ Zod**: 3.24.1
+- **🎭 Lucide React**: 0.473.0
+- **🔐 Authentication**: Custom token-based auth with cookie persistence
+- **⚡ Development**: Turbopack for faster dev experience
 
 ## Key Concepts
 
-- **Server Actions**: Used for server-side data mutations with client-side form handling
-- **Optimistic Updates**: Implemented with `useOptimistic` hook for responsive UX
-- **Streaming UI**: Leveraged Suspense and streaming for progressive rendering
-- **React Transitions**: Using `startTransition` to ensure proper order of UI updates
-- **Error Boundaries**: Graceful error handling with custom fallbacks
-- **RSC + RCC Architecture**: Hybrid approach combining React Server Components with Client Components
-- **Middleware**: Route protection and auth verification
-- **Data Caching**: Strategic cache invalidation with revalidation tags
-
-## Key Changes
+- **[Server Actions](https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions)**: Used for server-side data mutations with client-side form handling
+- **[Optimistic Updates](https://react.dev/reference/react/useOptimistic)**: Implemented with `useOptimistic` hook for responsive UX
+- **[Streaming UI](https://react.dev/reference/react/Suspense)**: Leveraged Suspense and streaming for progressive rendering
+- **[React Transitions](https://react.dev/reference/react/startTransition)**: Using `startTransition` to ensure proper order of UI updates
+- **[Error Boundaries](https://react.dev/reference/react/Component#catching-rendering-errors-with-an-error-boundary)**: Graceful error handling with custom fallbacks
+- **[RSC + RCC Architecture](https://nextjs.org/docs/app/building-your-application/rendering/server-components)**: Hybrid approach combining React Server Components with Client Components
+- **[Middleware](https://nextjs.org/docs/app/building-your-application/routing/middleware)**: Route protection and auth verification
+- **[Data Caching](https://nextjs.org/docs/app/building-your-application/caching)**: Strategic cache invalidation with revalidation tags
 
 ### Cart Management
 

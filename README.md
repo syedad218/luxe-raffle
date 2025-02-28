@@ -35,7 +35,7 @@ LuxeRaffle is a luxury car raffle platform that allows users to purchase tickets
 
 - **▲ Next.js**: 15.1.6 with App Router
 - **⚛️ React**: 19.0.0 with Server Components
-- **🎨 Tailwind CSS**: 3.4.1 with Shadcn/UI components
+- **🎨 Tailwind CSS**: 3.4.1 with **Shadcn/UI** components
 - **🔷 TypeScript**: 5
 - **🛡️ Zod**: 3.24.1
 - **🎭 Lucide React**: 0.473.0

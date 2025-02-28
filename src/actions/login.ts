@@ -4,14 +4,19 @@ import { updateUserCart } from '@/server-functions/cart';
 import { login } from '@/server-functions/login';
 import { cookies } from 'next/headers';
 import { z } from 'zod';
-import { FormState } from '@/types/Login';
 import { decryptToken } from '@/lib/token';
 import { getZodErrorObject } from '@/lib/utils/error';
+import { redirect } from 'next/navigation';
 
 export const userLogin = async (
   prevState: unknown,
-  formData: FormData,
-): Promise<FormState> => {
+  payload: {
+    formData: FormData;
+    redirectPath: string;
+  },
+) => {
+  const { formData, redirectPath } = payload;
+
   try {
     const email = formData.get('email') as string;
     const password = formData.get('password') as string;
@@ -24,21 +29,20 @@ export const userLogin = async (
     // get userId and update cart in the database with userId
     const userId = decryptToken(token || '')?.id;
     const guestCartId = cookieStore.get('cartId')?.value;
+
     if (userId) {
       const {
         cartCount,
         cartId: newCartId,
         expiration,
       } = await updateUserCart(guestCartId, userId);
-      if (guestCartId !== newCartId) {
+      if (newCartId && guestCartId !== newCartId) {
         cookieStore.set('cartId', newCartId, {
           expires: new Date(expiration),
         });
       }
-      cookieStore.set('cartCount', cartCount.toString());
+      if (cartCount !== 0) cookieStore.set('cartCount', cartCount.toString());
     }
-
-    return { success: true, errors: {} };
   } catch (error) {
     const rawInputs = {
       email: formData.get('email') as string,
@@ -61,4 +65,6 @@ export const userLogin = async (
       },
     };
   }
+
+  redirect(redirectPath);
 };

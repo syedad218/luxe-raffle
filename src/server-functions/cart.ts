@@ -26,8 +26,15 @@ export const updateUserCart = async (
   const existingCartId = db.userCart[userId];
   const existingCart = db.carts[existingCartId ?? ''];
 
-  // when guest cart doesn't exist, return the existing cart
-  if (existingCart && !guestCart) {
+  // when user doesn't have guest cart and existing cart, return empty cart
+  if (!guestCart && !existingCart) {
+    return {
+      cartCount: 0,
+      cartId: '',
+      expiration: '',
+    };
+  } else if (existingCart && !guestCart) {
+    // when guest cart doesn't exist, return the existing cart
     return {
       cartCount: existingCart.totalQuantity,
       cartId: existingCartId,

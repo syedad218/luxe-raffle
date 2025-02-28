@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label';
 import { userLogin } from '@/actions/login';
 import { Spinner } from '../ui/spinner';
 import { FormState } from '@/types/Login';
+import { useSearchParams } from 'next/navigation';
 
 const initialState: FormState = {
   success: false,
@@ -24,11 +25,20 @@ export function LoginForm({
   ...props
 }: React.ComponentPropsWithoutRef<'div'>) {
   // TODO: Make the form work
+  const searchParams = useSearchParams();
+  const redirectPath = searchParams.get('redirect') ?? '/account';
 
+  // @ts-ignore
   const [state, formAction, isPending] = useActionState(
     userLogin,
     initialState,
   );
+
+  const handleLogin = async (formData: FormData) => {
+    const payload = { formData, redirectPath };
+    // @ts-ignore
+    await formAction(payload);
+  };
 
   return (
     <div className={cn('flex flex-col gap-6', className)} {...props}>
@@ -37,7 +47,7 @@ export function LoginForm({
           <CardTitle className="text-2xl">Login</CardTitle>
         </CardHeader>
         <CardContent>
-          <form action={formAction}>
+          <form action={handleLogin}>
             <div className="flex flex-col gap-6">
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>

@@ -10,11 +10,12 @@ export default async function NotFoundPage() {
           Page Not Found
         </h2>
         <p className="text-gray-600 mb-6">
-          We couldn't find the page you're looking for. It might have been
-          removed, renamed, or doesn't exist.
+          We couldn&apos;t find the page you&apos;re looking for. It might have
+          been removed, renamed, or doesn&apos;t exist.
         </p>
         <div className="flex flex-col space-y-3 sm:flex-row sm:space-y-0 sm:space-x-3 justify-center">
-          {/* Using <a> tag since Link from next/navigation doesn't seems to work */}
+          {/* Using <a> tag since Link from next/navigation doesn&apos;t seems to work */}
+          {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
           <a href="/">
             <Button className="w-full sm:w-auto">Return Home</Button>
           </a>

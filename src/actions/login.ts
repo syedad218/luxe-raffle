@@ -4,19 +4,14 @@ import { updateUserCart } from '@/server-functions/cart';
 import { login } from '@/server-functions/login';
 import { cookies } from 'next/headers';
 import { z } from 'zod';
+import { FormState } from '@/types/Login';
 import { decryptToken } from '@/lib/token';
 import { getZodErrorObject } from '@/lib/utils/error';
-import { redirect } from 'next/navigation';
 
 export const userLogin = async (
   prevState: unknown,
-  payload: {
-    formData: FormData;
-    redirectPath: string;
-  },
-) => {
-  const { formData, redirectPath } = payload;
-
+  formData: FormData,
+): Promise<FormState> => {
   try {
     const email = formData.get('email') as string;
     const password = formData.get('password') as string;
@@ -43,6 +38,8 @@ export const userLogin = async (
       }
       if (cartCount !== 0) cookieStore.set('cartCount', cartCount.toString());
     }
+
+    return { success: true, errors: {} };
   } catch (error) {
     const rawInputs = {
       email: formData.get('email') as string,
@@ -65,6 +62,4 @@ export const userLogin = async (
       },
     };
   }
-
-  redirect(redirectPath);
 };

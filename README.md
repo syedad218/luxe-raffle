@@ -7,26 +7,22 @@
         <a href="https://nextjs.org/">
           <img src="https://assets.vercel.com/image/upload/v1662130559/nextjs/Icon_dark_background.png" width="80" height="80" alt="Next.js" />
         </a>
-        <br />Next.js 15
       </td>
       <td align="center" width="200">
         <a href="https://react.dev/">
           <img src="https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg" width="80" height="80" alt="React" />
         </a>
-        <br />React 19
       </td>
       <td align="center" width="200">
         <a href="https://ui.shadcn.com/">
-          <img src="https://avatars.githubusercontent.com/u/139895814?v=4
-          " width="80" height="80" alt="Shadcn/UI" style="background-color: transparent; padding: 10px; border-radius: 20px;" />
+          <img src="https://ui.shadcn.com/apple-touch-icon.png
+          " width="80" height="75" alt="Shadcn/UI" style="background-color: transparent; padding: 10px; border-radius: 20px;" />
         </a>
-        <br />Shadcn/UI
       </td>
       <td align="center" width="200">
         <a href="https://tailwindcss.com/">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/d/d5/Tailwind_CSS_Logo.svg" width="80" height="80" alt="Tailwind CSS" />
+          <img src="https://upload.wikimedia.org/wikipedia/commons/d/d5/Tailwind_CSS_Logo.svg" width="80" height="75" alt="Tailwind CSS" />
         </a>
-        <br />Tailwind CSS
       </td>
     </tr>
   </table>

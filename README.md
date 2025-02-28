@@ -17,9 +17,16 @@
       </td>
       <td align="center" width="200">
         <a href="https://ui.shadcn.com/">
-          <img src="https://avatars.githubusercontent.com/u/124599?v=4" width="80" height="80" alt="Shadcn/UI" />
+          <img src="https://avatars.githubusercontent.com/u/139895814?v=4
+          " width="80" height="80" alt="Shadcn/UI" style="background-color: transparent; padding: 10px; border-radius: 20px;" />
         </a>
         <br />Shadcn/UI
+      </td>
+      <td align="center" width="200">
+        <a href="https://tailwindcss.com/">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/d/d5/Tailwind_CSS_Logo.svg" width="80" height="80" alt="Tailwind CSS" />
+        </a>
+        <br />Tailwind CSS
       </td>
     </tr>
   </table>

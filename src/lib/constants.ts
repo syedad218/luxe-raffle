@@ -16,6 +16,8 @@ export const errorMessages = {
   order: {
     placeOrderfailed: 'Failed to place order! ',
     getOrdersFailed: 'Failed to get orders! ',
+    validationFailed:
+      "The data received doesn't match what we expected. Please try again later.",
   },
   raffles: {
     getRafflesFailed: 'Failed to get raffles! ',

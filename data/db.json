@@ -161,44 +161,16 @@
       "email": "jane.doe@gmail.com",
       "password": "applejuice",
       "firstName": "Jane"
+    },
+    {
+      "id": 2,
+      "email": "syed.alam@outlook.in",
+      "password": "applejuice",
+      "firstName": "Syed"
     }
   ],
-  "orders": {
-    "bba8bd10-ce5f-4f2a-82fe-a92e1cf1ea5b": {
-      "id": "bba8bd10-ce5f-4f2a-82fe-a92e1cf1ea5b",
-      "items": [
-        {
-          "id": 1,
-          "quantity": 10
-        }
-      ]
-    },
-    "b2a7acf1-da5d-41f2-bc4e-3e8504eb0841": {
-      "id": "b2a7acf1-da5d-41f2-bc4e-3e8504eb0841",
-      "items": [
-        {
-          "id": 1,
-          "quantity": 10
-        }
-      ]
-    },
-    "d57feba4-317b-4119-b7c7-a7d8f8c96621": {
-      "id": "d57feba4-317b-4119-b7c7-a7d8f8c96621",
-      "items": [
-        {
-          "id": 2,
-          "quantity": 1
-        }
-      ]
-    }
-  },
-  "userOrders": {
-    "1": [
-      "b2a7acf1-da5d-41f2-bc4e-3e8504eb0841",
-      "d57feba4-317b-4119-b7c7-a7d8f8c96621"
-    ],
-    "undefined": ["bba8bd10-ce5f-4f2a-82fe-a92e1cf1ea5b"]
-  },
+  "orders": {},
+  "userOrders": {},
   "carts": {},
-  "userCarts": {}
+  "userCart": {}
 }

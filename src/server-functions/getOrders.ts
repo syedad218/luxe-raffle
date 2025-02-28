@@ -23,7 +23,11 @@ export const getOrders = async (token: string) => {
   }
 
   const data = await response.json();
-  const orders = z.array(orderSchema).parse(data);
+  const orders = z.array(orderSchema).safeParse(data);
 
-  return orders;
+  if (!orders.success) {
+    throw new Error(errorMessages.order.validationFailed);
+  }
+
+  return orders.data;
 };

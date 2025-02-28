@@ -105,7 +105,7 @@
       "description": "Swedish hypercar pushing the boundaries of speed.",
       "image": "https://images.unsplash.com/photo-1724091663890-d84c2abfb28b",
       "longDescription": "The Koenigsegg Jesko is a showcase of Swedish engineering prowess, targeting record-breaking speeds with its twin-turbo V8 and advanced aerodynamics. Every panel and spoiler is carefully crafted to minimize drag and maximize downforce. Its interior is surprisingly refined, featuring modern design cues, premium materials, and the brand’s signature dihedral synchro-helix doors. The Jesko pushes the boundaries of what's achievable in a road car, transforming the drive into a physics-defying experience.",
-      "carPrice": "2.800.000",
+      "carPrice": 2800000,
       "ticketPrice": 70,
       "totalTickets": 40000,
       "availableTickets": 13994
@@ -161,42 +161,16 @@
       "email": "jane.doe@gmail.com",
       "password": "applejuice",
       "firstName": "Jane"
+    },
+    {
+      "id": 2,
+      "email": "syed.alam@outlook.in",
+      "password": "applejuice",
+      "firstName": "Syed"
     }
   ],
-  "orders": {
-    "bba8bd10-ce5f-4f2a-82fe-a92e1cf1ea5b": {
-      "id": "bba8bd10-ce5f-4f2a-82fe-a92e1cf1ea5b",
-      "items": [
-        {
-          "id": 1,
-          "quantity": 10
-        }
-      ]
-    },
-    "b2a7acf1-da5d-41f2-bc4e-3e8504eb0841": {
-      "id": "b2a7acf1-da5d-41f2-bc4e-3e8504eb0841",
-      "items": [
-        {
-          "id": 1,
-          "quantity": 10
-        }
-      ]
-    },
-    "d57feba4-317b-4119-b7c7-a7d8f8c96621": {
-      "id": "d57feba4-317b-4119-b7c7-a7d8f8c96621",
-      "items": [
-        {
-          "id": 2,
-          "quantity": 1
-        }
-      ]
-    }
-  },
-  "userOrders": {
-    "1": [
-      "b2a7acf1-da5d-41f2-bc4e-3e8504eb0841",
-      "d57feba4-317b-4119-b7c7-a7d8f8c96621"
-    ],
-    "undefined": ["bba8bd10-ce5f-4f2a-82fe-a92e1cf1ea5b"]
-  }
+  "orders": {},
+  "userOrders": {},
+  "carts": {},
+  "userCart": {}
 }

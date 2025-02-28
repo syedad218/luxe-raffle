@@ -1,5 +1,6 @@
 import { readDatabase, writeDatabase } from '@/app/(please-ignore)/api/db';
 import { decryptToken } from '@/lib/token';
+import { OrderItem } from '@/types/OrderItem';
 import { randomUUID } from 'crypto';
 
 export async function GET(req: Request) {
@@ -22,7 +23,8 @@ export async function GET(req: Request) {
 
   const db = await readDatabase();
 
-  const orders = db.userOrders[user.id].map((oderId) => db.orders[oderId]);
+  const orders =
+    db.userOrders[user.id]?.map((oderId) => db.orders[oderId]) ?? []; // added a small fallback here
 
   return Response.json(orders);
 }
@@ -55,11 +57,28 @@ export async function POST(req: Request) {
   }
 
   const orderId = randomUUID();
+  /* added few extra params to add more detail in the UI for order listing */
+  const createdAt = new Date().toISOString();
+  const total = items.reduce(
+    (acc: number, item: OrderItem) => acc + item.price * item.quantity,
+    0,
+  );
+  const subtotal = total;
+  const shipping = 0;
 
-  db.orders[orderId] = { id: orderId, items };
+  db.orders[orderId] = {
+    id: orderId,
+    createdAt,
+    total,
+    subtotal,
+    shipping,
+    items,
+  };
+
   if (!db.userOrders[user.id]) {
     db.userOrders[user.id] = [];
   }
+
   db.userOrders[user.id].push(orderId);
 
   await writeDatabase(db);

@@ -1,6 +1,4 @@
-import { OrderItem } from './OrderItem';
+import { z } from 'zod';
+import { orderSchema } from '@/lib/schemas/order';
 
-export type Order = {
-  id: string;
-  items: OrderItem[];
-};
+export type Order = z.infer<typeof orderSchema>;

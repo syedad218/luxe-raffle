@@ -172,5 +172,6 @@
   "orders": {},
   "userOrders": {},
   "carts": {},
-  "userCart": {}
+  "userCart": {},
+  "cartReservations": {}
 }

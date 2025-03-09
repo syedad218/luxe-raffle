@@ -8,6 +8,7 @@ export const cartItemSchema = z.object({
   imageSrc: z.string(),
   name: z.string(),
   description: z.string(),
+  reservationId: z.string().optional(),
 });
 
 export const cartSchema = z.object({

@@ -1,4 +1,3 @@
-import { readDatabase, writeDatabase } from '@/app/(please-ignore)/api/db';
 import type { Database } from '@/app/(please-ignore)/api/db';
 import { errorMessages } from '@/lib/constants';
 import {

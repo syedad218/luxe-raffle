@@ -4,8 +4,8 @@ import { OrderItem } from '@/types/OrderItem';
 import { order } from '@/server-functions/order';
 import { deleteCart } from '@/server-functions/cart';
 import { cookies } from 'next/headers';
-import { revalidateTag } from 'next/cache';
 import { redirect } from 'next/navigation';
+import { revalidateAllTags } from '@/server-functions/cache';
 
 export const checkoutAction = async (
   prevState: unknown,
@@ -35,8 +35,7 @@ export const checkoutAction = async (
     };
   }
 
-  revalidateTag('orders');
-  revalidateTag('cart');
+  revalidateAllTags(['orders', 'cart', 'raffles']);
 
   redirect('/account');
 };

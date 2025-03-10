@@ -3,7 +3,7 @@
 import type { Raffle } from '@/types/Raffle';
 import { addToCart, updateItemInCart } from '@/server-functions/cart';
 import { cookies } from 'next/headers';
-import { revalidateTag } from 'next/cache';
+import { revalidateAllTags } from '@/server-functions/cache';
 import { getCartExpiration } from '@/lib/utils/cart';
 import { decryptToken } from '@/lib/token';
 import { errorMessages } from '@/lib/constants';
@@ -50,7 +50,7 @@ export async function addItem(prevState: unknown, product: Raffle) {
     };
   }
 
-  revalidateTag('cart');
+  revalidateAllTags(['cart']);
 }
 
 export async function updateItem(
@@ -82,7 +82,7 @@ export async function updateItem(
     };
   }
 
-  revalidateTag('cart');
+  revalidateAllTags(['cart']);
 }
 
 export async function removeItem(prevState: unknown, productId: Raffle['id']) {
@@ -110,5 +110,5 @@ export async function removeItem(prevState: unknown, productId: Raffle['id']) {
     };
   }
 
-  revalidateTag('cart');
+  revalidateAllTags(['cart']);
 }

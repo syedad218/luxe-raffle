@@ -11,6 +11,11 @@ import {
 import { errorMessages } from '@/lib/constants';
 import type { Cart, UpdateType } from '@/types/Cart';
 import { updateExistingCartItem, createEmptyCart } from '@/lib/utils/cart';
+import {
+  createCartReservation,
+  releaseCartReservation,
+  updateCartReservation,
+} from '@/server-functions/cartReservations';
 
 export const updateUserCart = async (
   guestCartId: string | undefined,
@@ -91,14 +96,22 @@ export const addToCart = async ({
     cart = await createEmptyCart(userId);
   }
 
+  const reservationId = await createCartReservation(
+    cart.id,
+    product.id,
+    quantity,
+    db,
+  );
+
   // check if item exists in cart else add it
   const existingItem = cart.items.find((item) => item.raffleId === product.id);
 
   if (existingItem) {
     existingItem.quantity += quantity;
     existingItem.cost += product.ticketPrice * quantity;
+    existingItem.reservationId = reservationId;
   } else {
-    cart.items.push(createCartItem(product, quantity));
+    cart.items.push(createCartItem(product, quantity, reservationId));
   }
 
   const itemTotalCost = product.ticketPrice * quantity;
@@ -110,8 +123,6 @@ export const addToCart = async ({
   }
 
   await writeDatabase(db);
-
-  await wait(200);
 
   return { cartCount: cart.totalQuantity, cartId: cart.id };
 };
@@ -157,6 +168,12 @@ export const updateItemInCart = async ({
   if (itemIndex === -1) throw new Error(errorMessages.cart.itemNotFound);
 
   const existingItem = cart.items[itemIndex];
+
+  // if the item has a reservation, update the reservation
+  if (existingItem.reservationId) {
+    await updateCartReservation(existingItem.reservationId, updateType, db);
+  }
+
   const { updatedItem, newQuantity, singleItemCost } = updateExistingCartItem(
     existingItem,
     updateType,
@@ -192,6 +209,15 @@ export const deleteCart = async (
   // delete also from userCart if exists
   if (userId && db.userCart[userId] === cartId) {
     delete db.userCart[userId];
+  }
+
+  // release all reservations for this cart
+  const reservations = Object.values(db.cartReservations).filter(
+    (reservation) => reservation.cartId === cartId,
+  );
+
+  for (const reservation of reservations) {
+    await releaseCartReservation(reservation.id, db);
   }
   await writeDatabase(db);
 };

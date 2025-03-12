@@ -21,5 +21,10 @@ export const errorMessages = {
   },
   raffles: {
     getRafflesFailed: 'Failed to get raffles! ',
+    raffleNotFound: 'Raffle not found! ',
+    notEnoughTickets: 'Not enough tickets available! ',
+  },
+  cartReservations: {
+    reservationNotFound: 'Reservation not found! ',
   },
 };

@@ -51,6 +51,7 @@ export async function addItem(prevState: unknown, product: Raffle) {
   }
 
   revalidateTag('cart');
+  revalidateTag('raffles');
 }
 
 export async function updateItem(
@@ -83,6 +84,7 @@ export async function updateItem(
   }
 
   revalidateTag('cart');
+  revalidateTag('raffles');
 }
 
 export async function removeItem(prevState: unknown, productId: Raffle['id']) {
@@ -111,4 +113,5 @@ export async function removeItem(prevState: unknown, productId: Raffle['id']) {
   }
 
   revalidateTag('cart');
+  revalidateTag('raffles');
 }

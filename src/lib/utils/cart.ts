@@ -20,7 +20,11 @@ export const createEmptyCart = async (userId: number | undefined) => {
   return cart;
 };
 
-export const createCartItem = (product: Raffle, quantity = 1): CartItem => {
+export const createCartItem = (
+  product: Raffle,
+  quantity = 1,
+  reservationId?: string,
+): CartItem => {
   return {
     raffleId: product.id,
     quantity,
@@ -29,6 +33,7 @@ export const createCartItem = (product: Raffle, quantity = 1): CartItem => {
     imageSrc: product.image,
     name: product.name,
     description: product.description,
+    reservationId,
   };
 };
 

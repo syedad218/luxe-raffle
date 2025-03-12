@@ -10,7 +10,7 @@ export async function getCart({
 }: {
   cartId: string;
 }): Promise<Cart | undefined> {
-  await wait(500);
+  await wait();
 
   const cart = nextCache(
     async () => {

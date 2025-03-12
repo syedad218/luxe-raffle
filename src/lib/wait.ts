@@ -1,2 +1,2 @@
-export const wait = (ms = 3000) =>
+export const wait = (ms = 200) =>
   new Promise((resolve) => setTimeout(resolve, ms));

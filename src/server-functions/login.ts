@@ -16,7 +16,7 @@ const LoginRequest = z.object({
 
 export const login = async (email: string, password: string) => {
   // TODO: Implement login and store token safely
-  await wait(500);
+  await wait();
 
   const validatedCredentials = LoginRequest.parse({ email, password });
 

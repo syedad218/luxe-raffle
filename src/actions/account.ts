@@ -8,7 +8,7 @@ export const handleLogout = async () => {
   const cookieStore = await cookies();
   cookieStore.delete('sid').delete('cartId').delete('cartCount');
 
-  await wait(500); // simulate API slowness
+  await wait(); // simulate API slowness
 
   redirect('/login');
 };

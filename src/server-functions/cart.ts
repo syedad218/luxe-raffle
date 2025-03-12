@@ -111,8 +111,6 @@ export const addToCart = async ({
 
   await writeDatabase(db);
 
-  await wait(200);
-
   return { cartCount: cart.totalQuantity, cartId: cart.id };
 };
 
@@ -178,7 +176,7 @@ export const updateItemInCart = async ({
 
   await writeDatabase(db);
 
-  await wait(200);
+  await wait();
 
   return db.carts[cartId].totalQuantity;
 };

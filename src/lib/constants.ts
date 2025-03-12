@@ -21,5 +21,6 @@ export const errorMessages = {
   },
   raffles: {
     getRafflesFailed: 'Failed to get raffles! ',
+    getRaffleFailed: 'Failed to get raffle! ',
   },
 };
